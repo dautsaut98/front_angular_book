@@ -1,0 +1,53 @@
+<section class="text-center">
+  <!-- Background image -->
+  <div class="p-5 bg-image" style="
+        background-image: url('https://mdbootstrap.com/img/new/textures/full/171.jpg');
+        height: 300px;
+        "></div>
+  <!-- Background image -->
+
+  <div class="card mx-4 mx-md-5 shadow-5-strong" style="
+        margin-top: -100px;
+        background: hsla(0, 0%, 100%, 0.8);
+        backdrop-filter: blur(30px);
+        ">
+    <div class="card-body py-5 px-md-5">
+
+      <div class="row d-flex justify-content-center">
+        <div class="col-lg-8">
+          <h2 class="fw-bold mb-5">Connexion</h2>
+          <form [formGroup]="loginForm" (submit)="login()">
+
+            <!-- Login input -->
+            <div class="form-outline mb-4">
+              <div>
+                <input type="text" class="form-control" placeholder="Login" formControlName="login"/>
+              </div>
+              <div class="text-danger" *ngIf="!loginForm.get('login')?.valid && loginForm.get('login')?.['dirty']">login required</div>
+            </div>
+
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+              <div>
+                <input type="password" class="form-control" placeholder="Password" formControlName="password"/>
+              </div>
+              <div class="text-danger" *ngIf="!loginForm.get('password')?.valid && loginForm.get('password')?.['dirty']">password required</div>
+            </div>
+
+            <!-- Messages d'erreur du formulaire -->
+            <div class="text-danger" *ngIf="loginForm.errors?.['connection']">login or password incorrect</div>
+            <div class="text-danger" *ngIf="loginForm.errors?.['connectionServeur']">login failed</div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-block mb-4" [disabled]="!loginForm.valid">
+              CONNEXION
+            </button>
+            <div class="text-center">
+              <p>Not a member? <a routerLink="/createAccount">Register</a></p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

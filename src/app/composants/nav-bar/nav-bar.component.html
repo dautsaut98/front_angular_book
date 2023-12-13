@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" *ngIf="this.gestionUtilisateurService.utilisateur$ | async as data">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+      <a class="navbar-brand" routerLink="/libraire" [queryParams]="{filter: ''}">Home</a>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/libraire" [queryParams]="{filter: 'lu'}">Lu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/libraire" [queryParams]="{filter: 'nonLu'}">Non Lu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/addBook">Add Book</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <button class="btn btn-outline-light me-2" type="submit">Search</button>
+          <button class="btn btn-danger" type="submit" (click)="disconnect()">Disconnect</button>
+        </ul>
+      </form>
+    </div>
+  </div>
+</nav>

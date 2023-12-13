@@ -1,0 +1,92 @@
+<section class="text-center">
+  <!-- Background image -->
+  <div class="p-5 bg-image" style="
+        background-image: url('https://mdbootstrap.com/img/new/textures/full/171.jpg');
+        height: 300px;
+        "></div>
+  <!-- Background image -->
+
+  <div class="card mx-4 mx-md-5 shadow-5-strong" style="
+        margin-top: -100px;
+        background: hsla(0, 0%, 100%, 0.8);
+        backdrop-filter: blur(30px);
+        ">
+    <div class="card-body py-5 px-md-5">
+
+      <div class="row d-flex justify-content-center">
+        <div class="col-lg-8">
+          <h2 class="fw-bold mb-5">Register</h2>
+          <form [formGroup]="createAccountForm" (submit)="register()">
+
+            <!-- Login input -->
+            <div class="form-outline mb-4">
+              <div>
+                <input type="text" class="form-control" placeholder="Login" formControlName="login" id="login"/>
+              </div>
+              <div class="text-danger" *ngIf="!createAccountForm.get('login')?.valid && createAccountForm.get('login')?.['dirty']">login required</div>
+            </div>
+
+            <!-- Prenom input -->
+            <div class="form-outline mb-4">
+              <div>
+                <input type="text" class="form-control" placeholder="Prenom" formControlName="prenom" id="prenom"/>
+              </div>
+              <div class="text-danger" *ngIf="!createAccountForm.get('prenom')?.valid && createAccountForm.get('prenom')?.['dirty']">prenom required</div>
+            </div>
+
+            <!-- Nom input -->
+            <div class="form-outline mb-4">
+              <div>
+                <input type="text" class="form-control" placeholder="Nom" formControlName="nom" id="nom"/>
+              </div>
+              <div class="text-danger" *ngIf="!createAccountForm.get('nom')?.valid && createAccountForm.get('nom')?.['dirty']">nom required</div>
+            </div>
+
+          <div formGroupName="emailGroup">
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+              <div>
+                <input type="email" class="form-control" placeholder="email" formControlName="email" id="email"/>
+              </div>
+              <div class="text-danger" *ngIf="createAccountForm.get('emailGroup.email')?.errors?.['email']">email need to be conform</div>
+              <div class="text-danger" *ngIf="createAccountForm.get('emailGroup.email')?.errors?.['required']
+               && createAccountForm.get('emailGroup.email')?.['dirty']">email required</div>
+            </div>
+
+              <!-- Email Confirmation input -->
+            <div class="form-outline mb-4">
+              <div>
+                <input type="email" class="form-control" placeholder="email confirm" formControlName="emailConfirm" id="emailConfirm"/>
+              </div>
+              <div class="text-danger" *ngIf="createAccountForm.get('emailGroup.emailConfirm')?.errors?.['required']
+               && createAccountForm.get('emailGroup.emailConfirm')?.['dirty']">email required</div>
+              <div class="text-danger" *ngIf="createAccountForm.get('emailGroup')?.errors?.['emailGroupNotEqual']" >emails need to be equals</div>
+            </div>
+          </div>
+
+            <!-- Password input -->
+          <div class="form-outline mb-4">
+              <div>
+                <input type="password" class="form-control" placeholder="Password" formControlName="password" id="password"/>
+              </div>
+              <div class="text-danger" *ngIf="!createAccountForm.get('password')?.valid && createAccountForm.get('password')?.['dirty']">password required</div>
+          </div>
+
+          <!-- Messages d'erreur du formulaire -->
+          <div class="text-danger" *ngIf="createAccountForm.errors?.['loginEmailUse']">login or email already used</div>
+          <div class="text-danger" *ngIf="createAccountForm.errors?.['connectionServeur']">register failed</div>
+
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-primary btn-block mb-4" [disabled]="!createAccountForm.valid || !createAccountForm.get('emailGroup')?.valid">
+            CREATE
+          </button>
+
+          <div class="text-center">
+            <p>Already a member? <a routerLink="/login">Login</a></p>
+           </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
