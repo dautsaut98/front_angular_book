@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription, tap, timeout } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, catchError, tap, throwError, timeout } from 'rxjs';
 import { Utilisateur } from '../../models/utilisateur';
 
 
@@ -9,7 +9,7 @@ import { Utilisateur } from '../../models/utilisateur';
 })
 export class GestionUtilisateurService implements OnInit, OnDestroy {
 
-  utilisateurSubject: BehaviorSubject<Utilisateur | null> = new BehaviorSubject<Utilisateur | null>(null);
+  private utilisateurSubject: BehaviorSubject<Utilisateur | null> = new BehaviorSubject<Utilisateur | null>(null);
   utilisateur$: Observable<Utilisateur | null> = this.utilisateurSubject.asObservable();
 
   private urlBack = "http://localhost:4200/api/utilisateurs";
@@ -29,31 +29,66 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
    * @returns 
    */
   connect(login: string, password: string): Observable<Utilisateur | null>{
+    // On reset.
+    this.utilisateurSubject.next(null);
+
     let subscribeGetUtilisateurs =  this.getUtilisateurs()
     .subscribe({
       next: (utilisateurs: Utilisateur[]) => this.utilisateurSubject.next(utilisateurs.find(utilisateurFilter => utilisateurFilter.login === login && utilisateurFilter.password === password) ?? null),
-      error: err => console.error(err)});
+      error: err => this.gestionErreurUtilisateur(err)});
     this.subscriptions.push(subscribeGetUtilisateurs);
     return this.utilisateur$!;
   }
 
   /**
-   * Retourne true si on a trouvé et connecté l'utilisateur.
+   * Retourne l'utilisateur courant.
    * @param login 
    * @param password 
    * @returns 
    */
   register(utilisateur: Utilisateur): Observable<Utilisateur | null>{
+    // On récupère la liste des utilisateurs.
+    const subscribeGetUtilisateurs =  this.getUtilisateurs()
+      .subscribe({
+        next: (utilisateurs: Utilisateur[]) => {
+          // Si jamais le login ou le mot de passe existe déjà on met une erreur
+          if(utilisateurs.find(utilisateurFilter => utilisateurFilter.login === utilisateur.login || utilisateurFilter.email === utilisateur.email)){
+            this.gestionErreurUtilisateur(new Error('login ou password déjà existant'));
+          }
+          else {
+            // On ajoute le nouvel utilisateur.
+            this.addUtilisateur(utilisateur);
+          }
+        },
+        error: err => this.gestionErreurUtilisateur(err)});
+    this.subscriptions.push(subscribeGetUtilisateurs);
+
+    return this.utilisateur$!;
+  }
+
+  /**
+   * On ajoute un utilisateur.
+   * @param utilisateur
+   */
+  addUtilisateur(utilisateur: Utilisateur){
+    // On ajoute le nouvel utilisateur.
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     utilisateur.id = null;
     let subscribePostUtilisateur = this.http.post<Utilisateur>(this.urlBack, utilisateur, { headers })
       .pipe(tap(data => console.log('createProduct: ' + JSON.stringify(data))))
       .subscribe({
         next: utilisateur => this.utilisateurSubject.next(utilisateur ?? null),
-        error: err => console.error(err)});
+        error: err => this.gestionErreurUtilisateur(err)});
     this.subscriptions.push(subscribePostUtilisateur);
+  }
 
-    return this.utilisateur$!;
+  /**
+   * Log l'erreur et la met dans le utilisateurSubject.
+   * @param error 
+   */
+  gestionErreurUtilisateur(error: any){
+    console.error(error);
+    this.utilisateurSubject.error(error);
   }
 
   /**
@@ -64,11 +99,22 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
   }
 
   /**
+   * Méthode pour mettre à jour la propriété privée (utilisée uniquement pour les tests).
+   * @param user 
+   */
+  updateUtilisateurSubject(user: Utilisateur | null): void {
+    this.utilisateurSubject.next(user);
+  }
+
+  /**
    * retourne la liste des utilisateurs
    */
   getUtilisateurs(): Observable<Utilisateur[]>{
     return this.http.get<Utilisateur[]>(this.urlBack)
-      .pipe(tap(utilisateur => console.info(JSON.stringify(utilisateur))));
+      .pipe(tap({
+        next: utilisateur => console.info(JSON.stringify(utilisateur)),
+        error: error => console.error(error)
+      }));
   }
 
   ngOnDestroy(): void {

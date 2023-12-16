@@ -35,18 +35,9 @@ export class GestionBookService implements OnInit, OnDestroy {
     let subscribePostBook = this.http.post<Book>(this.urlBack, bookAdd, { headers })
       .pipe(tap(data => console.log('createProduct: ' + JSON.stringify(data))))
       .subscribe({
-        next: book => console.error(`add book : ${book}`),
+        next: () => this.router.navigate(['/libraire']),
         error: err => console.error(err)});
     this.subscriptions.push(subscribePostBook);
-    this.router.navigate(['/libraire']);
-  }
-
-  /**
-   * Supprime un livre.
-   * @param idBook 
-   */
-  deleteBook(idBook: number){
-    this.books = this.books.filter(bookFilter => bookFilter.id != idBook);
   }
 
   /**
@@ -54,14 +45,20 @@ export class GestionBookService implements OnInit, OnDestroy {
    * @param idUtilisateur 
    * @returns 
    */
-  getBooks(): Book[]{
-    this.idUser = this.gestionUtilisateurService.utilisateurSubject.getValue()?.id ?? null;
-    let subscribeGetBooks = this.http.get<Book[]>(this.urlBack)
-      .pipe(tap(utilisateur => console.log(JSON.stringify(utilisateur))))
-      .subscribe({
-        next: books => this.books = books.filter(book => book.idUtilisateur === this.idUser) ?? [],
-        error: err => console.error(err)});
-    this.subscriptions.push(subscribeGetBooks);
+  getBooks(): Book[] {
+    this.books = [];
+    this.gestionUtilisateurService.utilisateur$.subscribe({
+      next: user => {
+        this.idUser = user?.id ?? null;
+        let subscribeGetBooks = this.http.get<Book[]>(this.urlBack)
+          .pipe(tap(utilisateur => console.log(JSON.stringify(utilisateur))))
+          .subscribe({
+            next: books => this.books = books.filter(book => book.idUtilisateur === this.idUser) ?? [],
+            error: err => console.error(err)});
+        this.subscriptions.push(subscribeGetBooks);
+      }
+    });
+    
     return this.books;
   }
 
