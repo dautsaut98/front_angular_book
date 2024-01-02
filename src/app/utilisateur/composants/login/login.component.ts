@@ -23,8 +23,8 @@ export class LoginComponent implements OnInit{
   }
 
   login(): void{
-    let login: string = this.loginForm.get('login')?.value;
-    let password: string = this.loginForm.get('password')?.value;
+    const login: string = this.loginForm.get('login')?.value;
+    const password: string = this.loginForm.get('password')?.value;
 
     this.gestionUtilisateurService.connect(login, password).subscribe({
       next: utilisateur => utilisateur? this.router.navigate(["/libraire"]): this.loginForm.setErrors({ connection: true }),

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription, catchError, tap, throwError, timeout } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, catchError, of, tap, throwError, timeout } from 'rxjs';
 import { Utilisateur } from '../../models/utilisateur';
 
 
@@ -32,12 +32,13 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
     // On reset.
     this.utilisateurSubject.next(null);
 
-    let subscribeGetUtilisateurs =  this.getUtilisateurs()
+    const subscribeGetUtilisateurs =  this.getUtilisateurs()
     .subscribe({
-      next: (utilisateurs: Utilisateur[]) => this.utilisateurSubject.next(utilisateurs.find(utilisateurFilter => utilisateurFilter.login === login && utilisateurFilter.password === password) ?? null),
+      next: (utilisateurs: Utilisateur[]) => this.utilisateurSubject.next(utilisateurs.find(utilisateurFilter => utilisateurFilter.login === login && utilisateurFilter.password === password)),
       error: err => this.gestionErreurUtilisateur(err)});
     this.subscriptions.push(subscribeGetUtilisateurs);
-    return this.utilisateur$!;
+    debugger;
+    return of(this.utilisateurSubject.getValue());
   }
 
   /**
@@ -74,7 +75,7 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
     // On ajoute le nouvel utilisateur.
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     utilisateur.id = null;
-    let subscribePostUtilisateur = this.http.post<Utilisateur>(this.urlBack, utilisateur, { headers })
+    const subscribePostUtilisateur = this.http.post<Utilisateur>(this.urlBack, utilisateur, { headers })
       .pipe(tap(data => console.log('createProduct: ' + JSON.stringify(data))))
       .subscribe({
         next: utilisateur => this.utilisateurSubject.next(utilisateur ?? null),

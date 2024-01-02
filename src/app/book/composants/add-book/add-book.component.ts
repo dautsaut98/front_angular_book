@@ -56,12 +56,12 @@ export class AddBookComponent implements OnInit{
    */
   addBook(){
     this.books.controls.forEach(book =>{
-      let nom: string = book.get('nom')?.value;
-      let description: string = book.get('description')?.value;
-      let dateParution: string = book.get('dateParution')?.value;
-      let lu: string = book.get('lu')?.value;
-      let prenomAuteur: string = book.get('prenomAuteur')?.value;
-      let nomAuteur: string = book.get('nomAuteur')?.value;
+      const nom: string = book.get('nom')?.value;
+      const description: string = book.get('description')?.value;
+      const dateParution: string = book.get('dateParution')?.value;
+      const lu: string = book.get('lu')?.value;
+      const prenomAuteur: string = book.get('prenomAuteur')?.value;
+      const nomAuteur: string = book.get('nomAuteur')?.value;
 
       this.gestionBookService.addBook({id:-1, idUtilisateur:-1, nom:nom, prenomAuteur:prenomAuteur, nomAuteur:nomAuteur,
       description:description, dateParution:dateParution, genre:[], lu: !!lu});

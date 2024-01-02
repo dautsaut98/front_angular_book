@@ -10,11 +10,15 @@ export class AuthGuard implements CanActivate {
     private router: Router) {}
 
   canActivate(): boolean {
-    let valeurUtilisateur = this.gestionUtilisateurService.utilisateurSubject.getValue();
-    if(!valeurUtilisateur){
-      this.router.navigate(["/login"]);
-      return false;
-    }
+    this.gestionUtilisateurService.utilisateur$.subscribe({
+      next: utilisateur => {
+        if(!utilisateur){
+          this.router.navigate(["/login"]);
+          return false;
+        }
+        return true;
+      },
+    });
     return true;
   }
 }

@@ -32,7 +32,7 @@ export class GestionBookService implements OnInit, OnDestroy {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     bookAdd.id = null;
     bookAdd.idUtilisateur = this.idUser;
-    let subscribePostBook = this.http.post<Book>(this.urlBack, bookAdd, { headers })
+    const subscribePostBook = this.http.post<Book>(this.urlBack, bookAdd, { headers })
       .pipe(tap(data => console.log('createProduct: ' + JSON.stringify(data))))
       .subscribe({
         next: () => this.router.navigate(['/libraire']),
@@ -47,10 +47,10 @@ export class GestionBookService implements OnInit, OnDestroy {
    */
   getBooks(): Book[] {
     this.books = [];
-    this.gestionUtilisateurService.utilisateur$.subscribe({
+    const subscribeGetUtilisateur = this.gestionUtilisateurService.utilisateur$.subscribe({
       next: user => {
         this.idUser = user?.id ?? null;
-        let subscribeGetBooks = this.http.get<Book[]>(this.urlBack)
+        const subscribeGetBooks = this.http.get<Book[]>(this.urlBack)
           .pipe(tap(utilisateur => console.log(JSON.stringify(utilisateur))))
           .subscribe({
             next: books => this.books = books.filter(book => book.idUtilisateur === this.idUser) ?? [],
@@ -58,7 +58,8 @@ export class GestionBookService implements OnInit, OnDestroy {
         this.subscriptions.push(subscribeGetBooks);
       }
     });
-    
+    this.subscriptions.push(subscribeGetUtilisateur);
+
     return this.books;
   }
 
