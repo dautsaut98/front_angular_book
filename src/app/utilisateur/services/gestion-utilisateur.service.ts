@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription, catchError, of, tap, throwError, timeout } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, catchError, of, switchMap, tap, throwError, timeout } from 'rxjs';
 import { Utilisateur } from '../../models/utilisateur';
 
 
@@ -32,13 +32,16 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
     // On reset.
     this.utilisateurSubject.next(null);
 
-    const subscribeGetUtilisateurs =  this.getUtilisateurs()
-    .subscribe({
-      next: (utilisateurs: Utilisateur[]) => this.utilisateurSubject.next(utilisateurs.find(utilisateurFilter => utilisateurFilter.login === login && utilisateurFilter.password === password)),
-      error: err => this.gestionErreurUtilisateur(err)});
-    this.subscriptions.push(subscribeGetUtilisateurs);
-    debugger;
-    return of(this.utilisateurSubject.getValue());
+    return this.getUtilisateurs().pipe(
+      switchMap((utilisateurs: Utilisateur[]) => {
+        this.utilisateurSubject.next(utilisateurs.find(utilisateurFilter => utilisateurFilter.login === login && utilisateurFilter.password === password) ?? null);
+        return this.utilisateurSubject.asObservable();
+      }),
+      catchError((error: any) => {
+        this.gestionErreurUtilisateur(error);
+        return this.utilisateurSubject.asObservable();
+      })
+    );
   }
 
   /**

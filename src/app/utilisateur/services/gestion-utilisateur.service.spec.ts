@@ -104,10 +104,10 @@ describe('GestionUtilisateurService', () => {
             spyOn(console, 'error');
 
             // WHEN
-            service.connect('testLogin', 'testPassword');
+            const resultat = service.connect('testLogin', 'testPassword');
 
             // THEN
-            service.utilisateur$.subscribe({error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse))});
+            resultat.subscribe({error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse))});
             const req = httpTestingController.expectOne(urlUtilisateur);
             expect(req.request.method).toBe('GET');
             req.error(error);
