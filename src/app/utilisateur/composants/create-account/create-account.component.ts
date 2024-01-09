@@ -37,11 +37,11 @@ export class CreateAccountComponent implements OnInit{
     const login: string = this.createAccountForm.get('login')?.value;
     const prenom: string = this.createAccountForm.get('prenom')?.value;
     const nom: string = this.createAccountForm.get('nom')?.value;
-    const email: string = this.createAccountForm.get('email')?.value;
+    const email: string = this.createAccountForm.get('emailGroup').get('email')?.value;
     const password: string = this.createAccountForm.get('password')?.value;
 
-    this.gestionUtilisateurService.register({id:0, login: login, prenom: prenom, nom: nom, password: password, email: email}).subscribe({
-      next: utilisateur => utilisateur? this.router.navigate(["/libraire"]): this.createAccountForm.setErrors({ loginEmailUse: true }),
+    this.gestionUtilisateurService.addUtilisateur({id:-1, login: login, prenom: prenom, nom: nom, password: password, email: email}).subscribe({
+      next: utilisateurRetour => utilisateurRetour ? this.router.navigate(["/libraire"]) : this.createAccountForm.setErrors({ loginEmailUse: true }),
       error: () => this.createAccountForm.setErrors({ connectionServeur: true }),
     });
   }

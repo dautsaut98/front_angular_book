@@ -3,5 +3,5 @@ export interface Session {
     date: string;
     duree: string;
     nombreDePageLu: number;
-    idLivre: string;
+    idlivre : number;
 }

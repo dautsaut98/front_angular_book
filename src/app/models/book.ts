@@ -1,9 +1,7 @@
-import { Genre } from "./genre";
 
 export interface Book {
     id: number;
-    idUtilisateur: number;
-    genre: Genre[];
+    idUser: number;
     nom: string;
     prenomAuteur: string;
     nomAuteur: string;

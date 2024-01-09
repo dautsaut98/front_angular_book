@@ -14,15 +14,17 @@ export class LibrairieUtilisateurComponent implements OnInit, OnDestroy{
   filter: string = "";
   idUser: number = null;
 
+  listeLivre: Book[] = [];
+
   mapFilter = [
     {filterKey: "", 
-    filterValue: () => this.gestionBookService.getBooks()},
+    filterValue: () => this.listeLivre},
 
     {filterKey: "lu", 
-    filterValue: () => this.gestionBookService.getBooks().filter(book => book.lu)},
+    filterValue: () => this.listeLivre.filter(book => book.lu)},
 
     {filterKey: "nonLu", 
-    filterValue: () => this.gestionBookService.getBooks().filter(book => !book.lu)}
+    filterValue: () => this.listeLivre.filter(book => !book.lu)}
   ];
 
   private subscriptions: Subscription[] = [];
@@ -33,6 +35,7 @@ export class LibrairieUtilisateurComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.subscriptions = [];
+    this.listeLivre = this.gestionBookService.getBooks();
   
     this.route.queryParams.subscribe((params) => this.filter = params['filter'] ?? '');
 

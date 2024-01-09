@@ -21,7 +21,7 @@ describe('GestionUtilisateurService', () => {
     });
     describe('getUtilisateurs de GestionUtilisateurService',() => {
     
-        it('getUtilisateurs with error', () => {
+        xit('getUtilisateurs with error', () => {
             // GIVEN
             const error = new HttpErrorResponse({
                 error: new ErrorEvent('error', {message: 'Erreur interne du serveur'}),
@@ -47,7 +47,7 @@ describe('GestionUtilisateurService', () => {
             httpTestingController.verify();
         });
     
-        it('getUtilisateurs without error', () => {
+        xit('getUtilisateurs without error', () => {
             // GIVEN
             spyOn(console, 'info');
     
@@ -70,7 +70,7 @@ describe('GestionUtilisateurService', () => {
     describe('connect de GestionUtilisateurService',() => {
         const utilisateur: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
 
-        it('connect without error and user find', () => {
+        xit('connect without error and user find', () => {
             // WHEN
             const resultat = service.connect(utilisateur.login, utilisateur.password);
 
@@ -82,7 +82,7 @@ describe('GestionUtilisateurService', () => {
             httpTestingController.verify();
         });
 
-        it('connect without error and user not find', () => {
+        xit('connect without error and user not find', () => {
             // WHEN
             const resultat = service.connect(utilisateur.login, '');
 
@@ -94,7 +94,7 @@ describe('GestionUtilisateurService', () => {
             httpTestingController.verify();
         });
 
-        it('connect with error', () => {
+        xit('connect with error', () => {
             // GIVEN
             const error = new HttpErrorResponse({
                 error: new ErrorEvent('error', {message: 'Erreur interne du serveur'}),

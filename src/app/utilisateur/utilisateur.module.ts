@@ -4,8 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CreateAccountComponent } from './composants/create-account/create-account.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { Utilisateurs } from '../data/utilisateurs';
 
 
 
