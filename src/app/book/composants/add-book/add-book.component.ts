@@ -59,12 +59,12 @@ export class AddBookComponent implements OnInit{
       const nom: string = book.get('nom')?.value;
       const description: string = book.get('description')?.value;
       const dateParution: string = book.get('dateParution')?.value;
-      const lu: string = book.get('lu')?.value;
+      const lu: boolean = !!(book.get('lu')?.value ?? false);
       const prenomAuteur: string = book.get('prenomAuteur')?.value;
       const nomAuteur: string = book.get('nomAuteur')?.value;
 
       this.gestionBookService.addBook({id:-1, idUser:-1, nom:nom, prenomAuteur:prenomAuteur, nomAuteur:nomAuteur,
-      description:description, dateParution:dateParution, lu: !!lu});
+      description:description, dateParution:dateParution, lu: lu});
     });
   }
 }

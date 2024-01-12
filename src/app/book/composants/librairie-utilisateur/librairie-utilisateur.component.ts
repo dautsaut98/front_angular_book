@@ -35,11 +35,15 @@ export class LibrairieUtilisateurComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.subscriptions = [];
-    this.listeLivre = this.gestionBookService.getBooks();
+    const subscribeGetUtilisateur = this.gestionUtilisateurService.utilisateur$.subscribe(user => this.idUser = user?.id ?? null);
+    this.gestionBookService.getBooks(this.idUser).subscribe({
+      next: books => this.listeLivre = books,
+      error: error => this.listeLivre = []
+    });
   
     this.route.queryParams.subscribe((params) => this.filter = params['filter'] ?? '');
 
-    const subscribeGetUtilisateur = this.gestionUtilisateurService.utilisateur$.subscribe(user => this.idUser = user?.id ?? null);
+    
     this.subscriptions.push(subscribeGetUtilisateur);
   }
 

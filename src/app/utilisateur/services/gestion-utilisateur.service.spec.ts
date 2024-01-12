@@ -8,99 +8,51 @@ import { HttpErrorResponse } from "@angular/common/http";
 describe('GestionUtilisateurService', () => {
     let service: GestionUtilisateurService;
     let httpTestingController: any;
-    const urlUtilisateur = "http://localhost:4200/api/utilisateurs";
+    // url du back
+    const urlUtilisateur = "http://localhost:8080/utilisateur";
+
+    // Utilisateur à créér ou récupérer.
+    const utilisateur: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
+
+    // Pour simuler une erreur interne coté back.
+    const errorInterne = new HttpErrorResponse({
+        error: new ErrorEvent('error', {message: 'Erreur interne du serveur'}),
+        status: 500, // Le statut HTTP de l'erreur (500 pour une erreur serveur, par exemple)
+        statusText: 'Erreur interne du serveur', // Le texte du statut HTTP
+    });
+
+    // Pour simuler une erreur comme quoi l'utilisateur existe déjà coté back.
+    const errorUtilisateurDejaExistant = new HttpErrorResponse({
+        error: new ErrorEvent('error', {message: 'L utilisateur existe deja'}),
+        status: 409, // Le statut HTTP de l'erreur (500 pour une erreur serveur, par exemple)
+        statusText: 'L utilisateur existe deja', // Le texte du statut HTTP
+    });
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             providers: [GestionUtilisateurService]
         });
-      
-          httpTestingController = TestBed.inject(HttpTestingController);
-          service = TestBed.inject(GestionUtilisateurService);
-    });
-    describe('getUtilisateurs de GestionUtilisateurService',() => {
-    
-        xit('getUtilisateurs with error', () => {
-            // GIVEN
-            const error = new HttpErrorResponse({
-                error: new ErrorEvent('error', {message: 'Erreur interne du serveur'}),
-                status: 500, // Le statut HTTP de l'erreur (500 pour une erreur serveur, par exemple)
-                statusText: 'Erreur interne du serveur', // Le texte du statut HTTP
-              });
-            spyOn(console, 'error');
-    
-            // WHEN
-            const resultat = service.getUtilisateurs();
-    
-            // THEN
-            resultat.subscribe({
-                error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse))
-            });
-            // Vérifie si une requête correspondante a été effectuée avec l'URL attendue
-            const req = httpTestingController.expectOne(urlUtilisateur);
-            // On vérifie que l'on est dans une méthode GET.
-            expect(req.request.method).toBe('GET');
-            // Simule la réponse à la requête HTTP attendue
-            req.error(error);
-            // Permet de vérifier que l'on remplie bien les conditions de httpTestingController.
-            httpTestingController.verify();
-        });
-    
-        xit('getUtilisateurs without error', () => {
-            // GIVEN
-            spyOn(console, 'info');
-    
-            // WHEN
-            const resultat = service.getUtilisateurs();
-    
-            // THEN
-            resultat.subscribe(() => expect(console.info).toHaveBeenCalled());
-            // Vérifie si une requête correspondante a été effectuée avec l'URL attendue
-            const req = httpTestingController.expectOne(urlUtilisateur);
-            // On vérifie que l'on est dans une méthode GET.
-            expect(req.request.method).toBe('GET');
-            // Simule la réponse à la requête HTTP attendue
-            req.flush(null);
-            // Permet de vérifier que l'on remplie bien les conditions de httpTestingController.
-            httpTestingController.verify();
-        });
+        httpTestingController = TestBed.inject(HttpTestingController);
+        service = TestBed.inject(GestionUtilisateurService);
     });
 
     describe('connect de GestionUtilisateurService',() => {
-        const utilisateur: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
 
-        xit('connect without error and user find', () => {
+        it('connect without error and user find', () => {
             // WHEN
             const resultat = service.connect(utilisateur.login, utilisateur.password);
 
             // THEN
             resultat.subscribe((user) => expect(user).toEqual(utilisateur));
-            const req = httpTestingController.expectOne(urlUtilisateur);
+            const req = httpTestingController.expectOne(`${urlUtilisateur}?login=${utilisateur.login}&password=${utilisateur.password}`);
             expect(req.request.method).toBe('GET');
-            req.flush([utilisateur]);
+            req.flush(utilisateur);
             httpTestingController.verify();
         });
 
-        xit('connect without error and user not find', () => {
-            // WHEN
-            const resultat = service.connect(utilisateur.login, '');
-
-            // THEN
-            resultat.subscribe((user) => expect(user).toBeNull());
-            const req = httpTestingController.expectOne(urlUtilisateur);
-            expect(req.request.method).toBe('GET');
-            req.flush([utilisateur]);
-            httpTestingController.verify();
-        });
-
-        xit('connect with error', () => {
+        it('connect with error', () => {
             // GIVEN
-            const error = new HttpErrorResponse({
-                error: new ErrorEvent('error', {message: 'Erreur interne du serveur'}),
-                status: 500, // Le statut HTTP de l'erreur (500 pour une erreur serveur, par exemple)
-                statusText: 'Erreur interne du serveur', // Le texte du statut HTTP
-            });
             spyOn(console, 'error');
 
             // WHEN
@@ -108,187 +60,122 @@ describe('GestionUtilisateurService', () => {
 
             // THEN
             resultat.subscribe({error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse))});
-            const req = httpTestingController.expectOne(urlUtilisateur);
+            const req = httpTestingController.expectOne(`${urlUtilisateur}?login=${utilisateur.login}&password=${utilisateur.password}`);
             expect(req.request.method).toBe('GET');
-            req.error(error);
+            req.error(errorInterne);
             httpTestingController.verify();
         });
     });
-});
 
-describe('disconnect de GestionUtilisateurService', () => {
-    let service: GestionUtilisateurService;
-    let mockHttpClient: any;
+    describe('disconnect de GestionUtilisateurService', () => {
 
-    beforeEach(() => {
-        mockHttpClient = jasmine.createSpyObj(['get','post']);
-
-        service = new GestionUtilisateurService(mockHttpClient);
+        it('disconnect successful', () => {
+            // GIVEN
+            service.updateUtilisateurSubject(utilisateur);
+    
+            // WHEN
+            service.disconnect();
+    
+            // THEN
+            service.utilisateur$.subscribe((user) => expect(user).toEqual(null));
+        });
     });
 
-    xit('disconnect successful', () => {
-        // GIVEN
-        const utilisateur: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
-        service.updateUtilisateurSubject(utilisateur);
+    describe('gestionErreurUtilisateur de GestionUtilisateurService',() => {
 
-        // WHEN
-        service.disconnect();
-
-        // THEN
-        service.utilisateur$.subscribe((user) => expect(user).toEqual(null));
-    });
-});
-
-describe('gestionErreurUtilisateur de GestionUtilisateurService',() => {
-    let service: GestionUtilisateurService;
-    let mockHttpClient: any;
-
-    beforeEach(() => {
-        mockHttpClient = jasmine.createSpyObj(['get','post']);
-
-        service = new GestionUtilisateurService(mockHttpClient);
+        it('gestionErreurUtilisateur with error', () => {
+            // GIVEN
+            const error = new Error("error");
+            spyOn(console, 'error');
+    
+            // WHEN
+            service.gestionErreurUtilisateur(error);
+    
+            // THEN
+            expect(console.error).toHaveBeenCalledOnceWith(error);
+            service.utilisateur$.subscribe({error: err => expect(err).toEqual(error)});
+        });
     });
 
-    xit('gestionErreurUtilisateur with error', () => {
-        // GIVEN
-        const error = new Error("error");
-        spyOn(console, 'error');
+    describe('addUtilisateur de GestionUtilisateurService',() => {
 
-        // WHEN
-        service.gestionErreurUtilisateur(error);
+        it('addUtilisateur with error', () => {
+            // GIVEN
+            spyOn(console, 'error');
 
-        // THEN
-        expect(console.error).toHaveBeenCalledOnceWith(error);
-        service.utilisateur$.subscribe({error: err => expect(err).toEqual(error)});
-    });
-});
+            // WHEN
+            const resultat = service.addUtilisateur(utilisateur);
 
-describe('addUtilisateur de GestionUtilisateurService',() => {
-    let service: GestionUtilisateurService;
-    let mockHttpClient: any;
+            // THEN
+            resultat.subscribe({error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse))});
+            const req = httpTestingController.expectOne(`${urlUtilisateur}`);
+            expect(req.request.method).toBe('POST');
+            req.error(errorInterne);
+            httpTestingController.verify();
 
-    beforeEach(() => {
-        mockHttpClient = jasmine.createSpyObj(['get','post']);
+            expect(console.error).toHaveBeenCalledOnceWith(jasmine.any(HttpErrorResponse));
+            service.utilisateur$.subscribe({error: err => expect(err).toBeInstanceOf(HttpErrorResponse)});
+        });
 
-        service = new GestionUtilisateurService(mockHttpClient);
-    });
+        it('addUtilisateur without error', () => {
+            // WHEN
+            const resultat = service.addUtilisateur(utilisateur).subscribe();
 
-    xit('addUtilisateur with error', () => {
-        // GIVEN
-        const error = new Error("error");
-        spyOn(console, 'error');
+            // THEN
+            const req = httpTestingController.expectOne(`${urlUtilisateur}`);
+            expect(req.request.method).toBe('POST');
+            req.flush(utilisateur);
+            httpTestingController.verify();
 
-        const utilisateur: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
-
-        mockHttpClient.post.and.returnValue(throwError(() => error));
-
-        // WHEN
-        service.addUtilisateur(utilisateur);
-
-        // THEN
-        expect(console.error).toHaveBeenCalledOnceWith(error);
-        service.utilisateur$.subscribe({error: err => expect(err).toEqual(error)});
+            service.utilisateur$.subscribe(utilisateurReturn => expect(utilisateurReturn).toEqual(utilisateur));
+        });
     });
 
-    xit('addUtilisateur without error', () => {
-        // GIVEN
-        const error = new Error("error");
-        spyOn(console, 'error');
+    describe('register de GestionUtilisateurService',() => {
 
         const utilisateur: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
 
-        mockHttpClient.post.and.returnValue(of(utilisateur));
+        it('register without error', () => {
+            // WHEN
+            const resultat = service.addUtilisateur(utilisateur);
 
-        // WHEN
-        service.addUtilisateur(utilisateur);
+            // THEN
+            resultat.subscribe((user) => expect(user).toEqual(utilisateur));
+            const req = httpTestingController.expectOne(`${urlUtilisateur}`);
+            expect(req.request.method).toBe('POST');
+            req.flush(utilisateur);
+            httpTestingController.verify();
+            service.utilisateur$.subscribe(utilisateurReturn => expect(utilisateurReturn).toEqual(utilisateur));
+        });
 
-        // THEN
-        service.utilisateur$.subscribe(utilisateurReturn => expect(utilisateurReturn).toEqual(utilisateur));
-    });
-});
+        it('register with error because email already exist', () => {
+            // GIVEN
+            spyOn(console, 'error');
 
-describe('register de GestionUtilisateurService',() => {
-    let service: GestionUtilisateurService;
-    let mockHttpClient: any;
+            // WHEN
+            const resultat = service.addUtilisateur(utilisateur);
 
-    beforeEach(() => {
-        mockHttpClient = jasmine.createSpyObj(['get','post']);
+            // THEN
+            resultat.subscribe({error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse))});
+            const req = httpTestingController.expectOne(urlUtilisateur);
+            expect(req.request.method).toBe('POST');
+            req.error(errorUtilisateurDejaExistant);
+            httpTestingController.verify();
+        });
 
-        service = new GestionUtilisateurService(mockHttpClient);
-    });
+        it('register with error in addUtilisateur', () => {
+            // GIVEN
+            spyOn(console, 'error');
 
-    xit('register with error in addUtilisateur', () => {
-        // GIVEN
-        const error = new Error("error");
-        spyOn(console, 'error');
+            // WHEN
+            const resultat = service.addUtilisateur(utilisateur);
 
-        // Les 2 ont un login et email différent car sinon on tombe en erreur
-        const utilisateurGet: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
-        const utilisateurPost: Utilisateur = {id:1, email:'test2@gmail.com', login:'testLogin2', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
-
-        mockHttpClient.post.and.returnValue(throwError(() => error));
-        mockHttpClient.get.and.returnValue(of([utilisateurGet]));
-
-        // WHEN
-        service.register(utilisateurPost);
-
-        // THEN
-        expect(console.error).toHaveBeenCalledOnceWith(error);
-        service.utilisateur$.subscribe({error: err => expect(err).toEqual(error)});
-    });
-
-    xit('register without error', () => {
-        // GIVEN
-        const error = new Error("error");
-        spyOn(console, 'error');
-
-        // Les 2 ont un login et email différent car sinon on tombe en erreur
-        const utilisateurGet: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
-        const utilisateurPost: Utilisateur = {id:1, email:'test2@gmail.com', login:'testLogin2', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
-
-        mockHttpClient.post.and.returnValue(of(utilisateurPost));
-        mockHttpClient.get.and.returnValue(of([utilisateurGet]));
-
-        // WHEN
-        service.register(utilisateurPost);
-
-        // THEN
-        service.utilisateur$.subscribe(utilisateurReturn => expect(utilisateurReturn).toEqual(utilisateurPost));
-    });
-
-    xit('register with error because email already exist', () => {
-        // GIVEN
-        const error = new Error('login ou password déjà existant')
-        spyOn(console, 'error');
-
-        // Les 2 ont un email commun pour tomber en erreur
-        const utilisateurGet: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
-        const utilisateurPost: Utilisateur = {id:1, email:'test@gmail.com', login:'testLogin2', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
-
-        mockHttpClient.get.and.returnValue(of([utilisateurGet]));
-
-        // WHEN
-        service.register(utilisateurPost);
-
-        // THEN
-        expect(console.error).toHaveBeenCalledOnceWith(error);
-        service.utilisateur$.subscribe({error: err => expect(err).toEqual(error)});
-    });
-
-    xit('register with error in getUtilisateurs', () => {
-        // GIVEN
-        const error = new Error("error");
-        spyOn(console, 'error');
-
-        const utilisateurPost: Utilisateur = {id:1, email:'test2@gmail.com', login:'testLogin2', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
-
-        mockHttpClient.get.and.returnValue(throwError(() => error));
-
-        // WHEN
-        service.register(utilisateurPost);
-
-        // THEN
-        expect(console.error).toHaveBeenCalledWith(error);
-        service.utilisateur$.subscribe({error: err => expect(err).toEqual(error)});
+            // THEN
+            resultat.subscribe({error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse))});
+            const req = httpTestingController.expectOne(urlUtilisateur);
+            expect(req.request.method).toBe('POST');
+            req.error(errorInterne);
+            httpTestingController.verify();
+        });
     });
 });

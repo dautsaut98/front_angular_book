@@ -30,7 +30,7 @@
       <div class="form-outline mb-4">
         <div class="form-check">
           <label class="form-check-label" attr.for="{'lu' + bookIndex}">Lu</label>
-          <input class="form-check-input" type="checkbox" id="{'lu' + bookIndex}"/>
+          <input class="form-check-input" type="checkbox" id="{'lu' + bookIndex}" formControlName="lu"/>
         </div>
       </div>
 
@@ -40,7 +40,7 @@
           <input type="text" class="form-control" placeholder="Prenom auteur" formControlName="prenomAuteur" id="{'prenomAuteur' + bookIndex}"/>
         </div>
       </div>
-  
+
       <!-- Nom input auteur-->
       <div class="form-outline mb-4">
         <div>

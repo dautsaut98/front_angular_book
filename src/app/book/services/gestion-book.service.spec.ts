@@ -14,7 +14,7 @@ describe('GestionBookService', () => {
   let mockRouter: any;
   let httpTestingController: any;
 
-  const urlBook = 'http://localhost:4200/api/books';
+  const urlBook = 'http://localhost:8080/book';
 
   beforeEach(() => {
     mockGestionUtilisateurService = jasmine.createSpyObj(['utilisateurSubject']);
@@ -34,7 +34,7 @@ describe('GestionBookService', () => {
   });
 
   describe('addBook de GestionBookService', () => {
-    xit('appel de addBook renvoie une erreur', () => {
+    it('appel de addBook renvoie une erreur', () => {
       // GIVEN
       const error = new HttpErrorResponse({
         error: new ErrorEvent('error', {message: 'Erreur interne du serveur'}),
@@ -43,7 +43,7 @@ describe('GestionBookService', () => {
       });
       spyOn(console, 'error');
 
-      const book: Book = {id: 0, nom: '', dateParution: '', description: '', idUtilisateur: 0, lu: false, nomAuteur: '', prenomAuteur: ''};
+      const book: Book = {id: 0, nom: '', dateParution: '', description: '', idUser: 0, lu: false, nomAuteur: '', prenomAuteur: ''};
 
       // WHEN
       service.addBook(book);
@@ -61,9 +61,9 @@ describe('GestionBookService', () => {
       expect(console.error).toHaveBeenCalledOnceWith(jasmine.any(HttpErrorResponse));
     });
   
-    xit('appel de addBook redirige', () => {
+    it('appel de addBook redirige', () => {
       // GIVEN
-      const book: Book = {id: 0, nom: '', dateParution: '', description: '', idUtilisateur: 0, lu: false, nomAuteur: '', prenomAuteur: ''};
+      const book: Book = {id: 0, nom: '', dateParution: '', description: '', idUser: 0, lu: false, nomAuteur: '', prenomAuteur: ''};
 
       // WHEN
       service.addBook(book);
@@ -82,22 +82,26 @@ describe('GestionBookService', () => {
   });
 
   describe('getBook de GestionBookService', () => {
+    // Id de l'utilisateur utilise pour demander la liste des livres de celui-ci.
+    const idUser=0;
+
     beforeEach(() => {
       const utilisateur: Utilisateur = {id: 1, email: 'test@gmail.com', login:'testLogin', password:'testPassword', prenom:'testPrenom', nom:'testNom'};
       mockGestionUtilisateurService.utilisateur$ = of(utilisateur);
     });
 
-    xit('appel de getBook renvoie une liste de 1 livre avec une corelation avec l id utilisateur', () => {
+    it('appel de getBook renvoie une liste de 1 livre avec une corelation avec l id utilisateur', () => {
       // GIVEN  
-      const book: Book = {id: 0, nom: '', dateParution: '', description: '', idUtilisateur: 1, lu: false, nomAuteur: '', prenomAuteur: ''};
+      const book: Book = {id: 0, nom: '', dateParution: '', description: '', idUser: 1, lu: false, nomAuteur: '', prenomAuteur: ''};
 
       // WHEN
-      const listeBook: Book[] = service.getBooks();
+      let listeBook: Book[] = [];
+      service.getBooks(idUser).subscribe((books : Book[]) => listeBook = books);
 
       // THEN
       expect(listeBook.length).toBe(0);
       // Vérifie si une requête correspondante a été effectuée avec l'URL attendue
-      const req = httpTestingController.expectOne(urlBook);
+      const req = httpTestingController.expectOne(`${urlBook}?idUser=${idUser}`);
       // On vérifie que l'on est dans une méthode GET.
       expect(req.request.method).toBe('GET');
       // Simule la réponse à la requête HTTP attendue
@@ -106,17 +110,19 @@ describe('GestionBookService', () => {
       httpTestingController.verify();
     });
   
-    xit('appel de getBook renvoie une liste de 1 livre sans une corelation avec l id utilisateur', () => {
+    it('appel de getBook renvoie une liste de 1 livre sans une corelation avec l id utilisateur', () => {
       // GIVEN
-      const book: Book = {id: 0, nom: '', dateParution: '', description: '', idUtilisateur: 0, lu: false, nomAuteur: '', prenomAuteur: ''};
+      const book: Book = {id: 0, nom: '', dateParution: '', description: '', idUser: 0, lu: false, nomAuteur: '', prenomAuteur: ''};
+      let listeBook: Book[] = [];
   
       // WHEN
-      const listeBook: Book[] = service.getBooks();
+      // on recupère la reponse du serveur
+      service.getBooks(idUser).subscribe((books : Book[]) => listeBook = books);
   
       // THEN
       expect(listeBook.length).toBe(0);
       // Vérifie si une requête correspondante a été effectuée avec l'URL attendue
-      const req = httpTestingController.expectOne(urlBook);
+      const req = httpTestingController.expectOne(`${urlBook}?idUser=${idUser}`);
       // On vérifie que l'on est dans une méthode GET.
       expect(req.request.method).toBe('GET');
       // Simule la réponse à la requête HTTP attendue
@@ -124,31 +130,25 @@ describe('GestionBookService', () => {
       // Permet de vérifier que l'on remplie bien les conditions de httpTestingController.
       httpTestingController.verify();
     });
-  
-    xit('appel de getBook renvoie une erreur', () => {
+
+    it('appel de getBook renvoie une erreur', () => {
       // GIVEN
-      const error = new HttpErrorResponse({
-        error: new ErrorEvent('error', {message: 'Erreur interne du serveur'}),
-        status: 500, // Le statut HTTP de l'erreur (500 pour une erreur serveur, par exemple)
-        statusText: 'Erreur interne du serveur', // Le texte du statut HTTP
-      });
-  
+      const expectedError = { status: 500, statusText: 'Erreur interne du serveur' };
+
       spyOn(console, 'error');
-  
+
       // WHEN
-      service.getBooks();
-  
+      service.getBooks(idUser).subscribe({
+        error: (errorReturn: HttpErrorResponse) => expect(errorReturn).toEqual(jasmine.objectContaining(expectedError)),
+      });
+
       // THEN
-      // Vérifie si une requête correspondante a été effectuée avec l'URL attendue
-      const req = httpTestingController.expectOne(urlBook);
-      // On vérifie que l'on est dans une méthode GET.
+      const req = httpTestingController.expectOne(`${urlBook}?idUser=${idUser}`);
       expect(req.request.method).toBe('GET');
-      // Simule la réponse à la requête HTTP attendue
-      req.error(error);
-      // Permet de vérifier que l'on remplie bien les conditions de httpTestingController.
+      req.flush(null, expectedError);
       httpTestingController.verify();
 
-       expect(console.error).toHaveBeenCalledOnceWith(jasmine.any(HttpErrorResponse));
+      expect(console.error).toHaveBeenCalledOnceWith(jasmine.any(HttpErrorResponse));
     });
   });
 });
