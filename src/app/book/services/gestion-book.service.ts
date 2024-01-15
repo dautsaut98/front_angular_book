@@ -1,15 +1,13 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, Subscription, first, tap, catchError } from 'rxjs';
+import { Observable, Subscription, first, tap } from 'rxjs';
 import { Book } from 'src/app/models/book';
-import { GestionUtilisateurService } from 'src/app/utilisateur/services/gestion-utilisateur.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GestionBookService implements OnInit, OnDestroy {
-  private books!: Book[];
+  books!: Book[];
   book?: Book;
   idUser: number = null;
 
@@ -17,8 +15,7 @@ export class GestionBookService implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private gestionUtilisateurService: GestionUtilisateurService,
-    private router: Router, private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.subscriptions = [];
@@ -28,19 +25,17 @@ export class GestionBookService implements OnInit, OnDestroy {
    * Ajoute un livre.
    * @param bookAdd 
    */
-  addBook(bookAdd: Book) {
+  addBook(bookAdd: Book): Observable<Book> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     bookAdd.id = null;
     bookAdd.idUser = this.idUser;
 
-    const subscribePostBook = this.http.post<Book>(this.urlBack, bookAdd, { headers })
+    return this.http.post<Book>(this.urlBack, bookAdd, { headers })
       .pipe(
         first(),
-        tap(data => console.log('createProduct: ' + JSON.stringify(data))))
-      .subscribe({
-        next: () => this.router.navigate(['/libraire']),
-        error: err => console.error(err)});
-    this.subscriptions.push(subscribePostBook);
+        tap({
+          error: err => console.error(err)
+        }));
   }
 
   /**
@@ -48,18 +43,21 @@ export class GestionBookService implements OnInit, OnDestroy {
    * @param idUtilisateur 
    * @returns 
    */
-  getBooks( idUser: number ): Observable<Book[]>{
+  getBooks(idUser: number): Observable<Book[]> {
     this.idUser = idUser ?? null;
 
-    const queryParams = new HttpParams().append("idUser",this.idUser);
-    return this.http.get<Book[]>(this.urlBack, {params:queryParams})
+    const queryParams = new HttpParams().append("idUser", this.idUser);
+    return this.http.get<Book[]>(this.urlBack, { params: queryParams })
       .pipe(
         first(),
         tap({
-          next: books => console.info(JSON.stringify(books)),
+          next: books => {
+            console.info(JSON.stringify(books));
+            this.books = books;
+          },
           error: error => console.error(error)
         }));
-  } 
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscribe => subscribe.unsubscribe());

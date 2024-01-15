@@ -12,12 +12,12 @@ import { GestionUtilisateurService } from 'src/app/utilisateur/services/gestion-
 export class NavBarComponent {
 
   constructor(public gestionUtilisateurService: GestionUtilisateurService,
-    private router: Router){}
+    private router: Router) { }
 
   /**
    * Deconnecte l'utilisateur.
    */
-  disconnect(){
+  disconnect(): void {
     this.gestionUtilisateurService.disconnect();
     this.router.navigate(["/login"]);
   }

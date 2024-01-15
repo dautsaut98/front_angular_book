@@ -28,7 +28,7 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
    * @param password 
    * @returns 
    */
-  connect(login: string, password: string): Observable<Utilisateur | null>{
+  connect(login: string, password: string): Observable<Utilisateur> {
     // On reset.
     this.utilisateurSubject.next(null);
 
@@ -48,7 +48,7 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
    * On ajoute un utilisateur et retourne l'utilisateur courant.
    * @param utilisateur
    */
-  addUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur | null>{
+  addUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur> {
     this.utilisateurSubject.next(null);
     // On ajoute le nouvel utilisateur.
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -68,7 +68,7 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
    * Log l'erreur et la met dans le utilisateurSubject.
    * @param error 
    */
-  gestionErreurUtilisateur(error: any){
+  gestionErreurUtilisateur(error: any): void {
     console.error(error);
     this.utilisateurSubject.error(error);
   }
@@ -76,7 +76,7 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
   /**
    * Retourne l'utilisateur connecté.
    */
-  disconnect(){
+  disconnect(): void {
     this.utilisateurSubject.next(null);
   }
 
@@ -84,24 +84,24 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
    * Méthode pour mettre à jour la propriété privée (utilisée uniquement pour les tests).
    * @param user 
    */
-  updateUtilisateurSubject(user: Utilisateur | null): void {
+  updateUtilisateurSubject(user: Utilisateur): void {
     this.utilisateurSubject.next(user);
   }
 
   /**
    * retourne l'utilisateur
    */
-  getUtilisateur(login: string, password: string): Observable<Utilisateur>{
-    const queryParams = new HttpParams().append("login",login).append("password",password);
+  getUtilisateur(login: string, password: string): Observable<Utilisateur> {
+    const queryParams = new HttpParams().append("login", login).append("password", password);
 
-    return this.http.get<Utilisateur>(this.urlBack,{params:queryParams})
+    return this.http.get<Utilisateur>(this.urlBack, { params: queryParams })
       .pipe(
         first(),
         tap({
           next: utilisateur => console.info(JSON.stringify(utilisateur)),
           error: error => console.error(error)
         }
-      ));
+        ));
   }
 
   ngOnDestroy(): void {

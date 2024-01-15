@@ -8,26 +8,26 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
     private gestionUtilisateurService: GestionUtilisateurService,
-    private router: Router){}
+    private router: Router) { }
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
-      login: ['', Validators.required],
-      password: ['', Validators.required],
+      login: ['', [Validators.required, Validators.minLength(3)]],
+      password: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
 
-  login(): void{
+  login(): void {
     const login: string = this.loginForm.get('login')?.value;
     const password: string = this.loginForm.get('password')?.value;
 
     this.gestionUtilisateurService.connect(login, password).subscribe({
-      next: utilisateur => utilisateur? this.router.navigate(["/libraire"]): this.loginForm.setErrors({ connection: true }),
+      next: () => this.router.navigate(["/libraire"]),
       error: () => this.loginForm.setErrors({ connectionServeur: true }),
     });
   }

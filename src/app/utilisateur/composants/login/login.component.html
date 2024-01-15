@@ -21,17 +21,20 @@
             <!-- Login input -->
             <div class="form-outline mb-4">
               <div>
-                <input type="text" class="form-control" placeholder="Login" formControlName="login"/>
+                <input type="text" class="form-control" placeholder="Login" formControlName="login" />
               </div>
-              <div class="text-danger" *ngIf="!loginForm.get('login')?.valid && loginForm.get('login')?.['dirty']">login required</div>
+              <div class="text-danger" *ngIf="!loginForm.get('login')?.valid && loginForm.get('login')?.['dirty']">login
+                required</div>
             </div>
 
             <!-- Password input -->
             <div class="form-outline mb-4">
               <div>
-                <input type="password" class="form-control" placeholder="Password" formControlName="password"/>
+                <input type="password" class="form-control" placeholder="Password" formControlName="password" />
               </div>
-              <div class="text-danger" *ngIf="!loginForm.get('password')?.valid && loginForm.get('password')?.['dirty']">password required</div>
+              <div class="text-danger"
+                *ngIf="!loginForm.get('password')?.valid && loginForm.get('password')?.['dirty']">password required
+              </div>
             </div>
 
             <!-- Messages d'erreur du formulaire -->

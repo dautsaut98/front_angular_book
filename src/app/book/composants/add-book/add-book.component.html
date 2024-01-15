@@ -1,4 +1,3 @@
-
 <form [formGroup]="bookForm" (submit)="addBook()">
   <div class="list-group" formArrayName="books" *ngFor="let book of books.controls; let bookIndex=index">
     <div class="list-group-item list-group-item-action" [formGroupName]="bookIndex">
@@ -8,21 +7,23 @@
       <!-- Nom input auteur-->
       <div class="form-outline mb-4">
         <div>
-          <input type="text" class="form-control" placeholder="Nom" formControlName="nom" id="{'nom' + bookIndex}"/>
+          <input type="text" class="form-control" placeholder="Nom" formControlName="nom" id="{'nom' + bookIndex}" />
         </div>
       </div>
 
       <!-- Description input auteur-->
       <div class="form-outline mb-4">
         <div>
-          <input type="textarea" class="form-control" placeholder="Description" formControlName="description"  id="{'nom' + bookIndex}"/>
+          <input type="textarea" class="form-control" placeholder="Description" formControlName="description"
+            id="{'nom' + bookIndex}" />
         </div>
       </div>
 
       <!-- Date input auteur-->
       <div class="form-outline mb-4">
         <div>
-          <input type="date" class="form-control" placeholder="Date de Parution" formControlName="dateParution" id="{'nom' + bookIndex}"/>
+          <input type="date" class="form-control" placeholder="Date de Parution" formControlName="dateParution"
+            id="{'nom' + bookIndex}" />
         </div>
       </div>
 
@@ -30,27 +31,35 @@
       <div class="form-outline mb-4">
         <div class="form-check">
           <label class="form-check-label" attr.for="{'lu' + bookIndex}">Lu</label>
-          <input class="form-check-input" type="checkbox" id="{'lu' + bookIndex}" formControlName="lu"/>
+          <input class="form-check-input" type="checkbox" id="{'lu' + bookIndex}" formControlName="lu" />
         </div>
       </div>
 
       <!-- Prenom input auteur-->
       <div class="form-outline mb-4">
         <div>
-          <input type="text" class="form-control" placeholder="Prenom auteur" formControlName="prenomAuteur" id="{'prenomAuteur' + bookIndex}"/>
+          <input type="text" class="form-control" placeholder="Prenom auteur" formControlName="prenomAuteur"
+            id="{'prenomAuteur' + bookIndex}" />
         </div>
       </div>
 
       <!-- Nom input auteur-->
       <div class="form-outline mb-4">
         <div>
-          <input type="text" class="form-control" placeholder="Nom auteur" formControlName="nomAuteur" id="{'nomAuteur' + bookIndex}"/>
+          <input type="text" class="form-control" placeholder="Nom auteur" formControlName="nomAuteur"
+            id="{'nomAuteur' + bookIndex}" />
         </div>
       </div>
+
+      <!-- Messages d'erreur du formulaire -->
+      <div class="text-danger" *ngIf="book.errors?.['bookDejaExistant']">Livre déjà existant</div>
+      <div class="text-danger" *ngIf="book.errors?.['UtilisateurNotFound']">Utilisateur introuvable</div>
+      <div class="text-danger" *ngIf="book.errors?.['erreurLorsDeLEnregistrement']">Erreur lors de l'enregristrement</div>
     </div>
+
     <button class="btn btn-danger" *ngIf="bookIndex > 0" (click)="deleteFormBook(bookIndex)">Delete form book</button>
   </div>
-  <button type="submit" class="btn btn-success">Add book</button>
+  <button type="submit" class="btn btn-success"[disabled]="!books.valid">Add book</button>
 </form>
 <button class="btn btn-success" (click)="addFormBook()">Add another form book</button>
 <button class="btn btn-danger float-end" routerLink="/libraire">Cancel</button>

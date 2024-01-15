@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 
 function validatorEmailGroup(abstractControl: AbstractControl): { [key: string]: boolean } | null {
-  return (abstractControl.get('email')?.value != abstractControl.get('emailConfirm')?.value) ? { emailGroupNotEqual: true }: null;
+  return (abstractControl.get('email')?.value != abstractControl.get('emailConfirm')?.value) ? { emailGroupNotEqual: true } : null;
 }
 
 @Component({
@@ -13,12 +13,12 @@ function validatorEmailGroup(abstractControl: AbstractControl): { [key: string]:
   templateUrl: './create-account.component.html',
   styleUrls: ['./create-account.component.scss']
 })
-export class CreateAccountComponent implements OnInit{
+export class CreateAccountComponent implements OnInit {
   createAccountForm!: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
     private gestionUtilisateurService: GestionUtilisateurService,
-    private router: Router){}
+    private router: Router) { }
 
   ngOnInit(): void {
     this.createAccountForm = this.formBuilder.group({
@@ -28,20 +28,20 @@ export class CreateAccountComponent implements OnInit{
       emailGroup: this.formBuilder.group({
         email: ['', [Validators.required, Validators.email]],
         emailConfirm: ['', Validators.required],
-      }, {validator: validatorEmailGroup}),
+      }, { validator: validatorEmailGroup }),
       password: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
 
-  register(){
+  register(): void {
     const login: string = this.createAccountForm.get('login')?.value;
     const prenom: string = this.createAccountForm.get('prenom')?.value;
     const nom: string = this.createAccountForm.get('nom')?.value;
     const email: string = this.createAccountForm.get('emailGroup').get('email')?.value;
     const password: string = this.createAccountForm.get('password')?.value;
 
-    this.gestionUtilisateurService.addUtilisateur({id:-1, login: login, prenom: prenom, nom: nom, password: password, email: email}).subscribe({
-      next: utilisateurRetour => utilisateurRetour ? this.router.navigate(["/libraire"]) : this.createAccountForm.setErrors({ loginEmailUse: true }),
+    this.gestionUtilisateurService.addUtilisateur({ id: -1, login: login, prenom: prenom, nom: nom, password: password, email: email }).subscribe({
+      next: () => this.router.navigate(["/libraire"]),
       error: () => this.createAccountForm.setErrors({ connectionServeur: true }),
     });
   }

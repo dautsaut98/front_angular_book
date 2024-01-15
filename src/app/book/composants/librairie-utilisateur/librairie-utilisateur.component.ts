@@ -10,28 +10,34 @@ import { Subscription } from 'rxjs';
   templateUrl: './librairie-utilisateur.component.html',
   styleUrls: ['./librairie-utilisateur.component.scss']
 })
-export class LibrairieUtilisateurComponent implements OnInit, OnDestroy{
+export class LibrairieUtilisateurComponent implements OnInit, OnDestroy {
   filter: string = "";
   idUser: number = null;
 
   listeLivre: Book[] = [];
 
   mapFilter = [
-    {filterKey: "", 
-    filterValue: () => this.listeLivre},
+    {
+      filterKey: "",
+      filterValue: () => this.listeLivre
+    },
 
-    {filterKey: "lu", 
-    filterValue: () => this.listeLivre.filter(book => book.lu)},
+    {
+      filterKey: "lu",
+      filterValue: () => this.listeLivre.filter(book => book.lu)
+    },
 
-    {filterKey: "nonLu", 
-    filterValue: () => this.listeLivre.filter(book => !book.lu)}
+    {
+      filterKey: "nonLu",
+      filterValue: () => this.listeLivre.filter(book => !book.lu)
+    }
   ];
 
   private subscriptions: Subscription[] = [];
 
   constructor(private gestionBookService: GestionBookService,
     private gestionUtilisateurService: GestionUtilisateurService,
-    private route: ActivatedRoute) {}
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.subscriptions = [];
@@ -40,14 +46,14 @@ export class LibrairieUtilisateurComponent implements OnInit, OnDestroy{
       next: books => this.listeLivre = books,
       error: error => this.listeLivre = []
     });
-  
+
     this.route.queryParams.subscribe((params) => this.filter = params['filter'] ?? '');
 
-    
+
     this.subscriptions.push(subscribeGetUtilisateur);
   }
 
-  getBooks(): Book[]{
+  getBooks(): Book[] {
     return this.mapFilter.find(filterElement => filterElement.filterKey === this.filter)?.filterValue()!;
   }
 
