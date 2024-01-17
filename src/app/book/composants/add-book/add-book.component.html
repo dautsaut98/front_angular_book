@@ -2,52 +2,52 @@
   <div class="list-group" formArrayName="books" *ngFor="let book of books.controls; let bookIndex=index">
     <div class="list-group-item list-group-item-action" [formGroupName]="bookIndex">
 
-      <h2 class="fw-bold mb-5">Livre {{bookIndex+1}}</h2>
+      <h2 class="fw-bold mb-5">Livre {{bookIndex + 1}}</h2>
 
-      <!-- Nom input auteur-->
+      <!-- Nom -->
       <div class="form-outline mb-4">
         <div>
-          <input type="text" class="form-control" placeholder="Nom" formControlName="nom" id="{'nom' + bookIndex}" />
+          <input type="text" class="form-control" placeholder="Nom" formControlName="nom" id="{{'nom' + bookIndex}}" />
         </div>
       </div>
 
-      <!-- Description input auteur-->
+      <!-- Description -->
       <div class="form-outline mb-4">
         <div>
           <input type="textarea" class="form-control" placeholder="Description" formControlName="description"
-            id="{'nom' + bookIndex}" />
+            id="{{'description' + bookIndex}}" />
         </div>
       </div>
 
-      <!-- Date input auteur-->
+      <!-- Date -->
       <div class="form-outline mb-4">
         <div>
           <input type="date" class="form-control" placeholder="Date de Parution" formControlName="dateParution"
-            id="{'nom' + bookIndex}" />
+            id="{{'dateParution' + bookIndex}}" />
         </div>
       </div>
 
-      <!-- Lu input auteur-->
+      <!-- Lu -->
       <div class="form-outline mb-4">
         <div class="form-check">
-          <label class="form-check-label" attr.for="{'lu' + bookIndex}">Lu</label>
-          <input class="form-check-input" type="checkbox" id="{'lu' + bookIndex}" formControlName="lu" />
+          <label class="form-check-label" attr.for="{{'lu' + bookIndex}}">Lu</label>
+          <input class="form-check-input" type="checkbox" id="{{'lu' + bookIndex}}" formControlName="lu" />
         </div>
       </div>
 
-      <!-- Prenom input auteur-->
+      <!-- Prenom auteur -->
       <div class="form-outline mb-4">
         <div>
           <input type="text" class="form-control" placeholder="Prenom auteur" formControlName="prenomAuteur"
-            id="{'prenomAuteur' + bookIndex}" />
+            id="{{'prenomAuteur' + bookIndex}}" />
         </div>
       </div>
 
-      <!-- Nom input auteur-->
+      <!-- Nom auteur -->
       <div class="form-outline mb-4">
         <div>
           <input type="text" class="form-control" placeholder="Nom auteur" formControlName="nomAuteur"
-            id="{'nomAuteur' + bookIndex}" />
+            id="{{'nomAuteur' + bookIndex}}" />
         </div>
       </div>
 

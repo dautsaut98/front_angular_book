@@ -44,11 +44,10 @@ export class LibrairieUtilisateurComponent implements OnInit, OnDestroy {
     const subscribeGetUtilisateur = this.gestionUtilisateurService.utilisateur$.subscribe(user => this.idUser = user?.id ?? null);
     this.gestionBookService.getBooks(this.idUser).subscribe({
       next: books => this.listeLivre = books,
-      error: error => this.listeLivre = []
+      error: () => this.listeLivre = []
     });
 
     this.route.queryParams.subscribe((params) => this.filter = params['filter'] ?? '');
-
 
     this.subscriptions.push(subscribeGetUtilisateur);
   }

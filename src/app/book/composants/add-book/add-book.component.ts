@@ -63,13 +63,16 @@ export class AddBookComponent implements OnInit {
     }
 
     // On enregistre les livres 1 par un.
-    this.books.controls.map(bookControl => {
+    this.books.controls.forEach(bookControl => {
       const bookAdd = this.transformFormInBook(bookControl);
 
       this.gestionBookService.addBook(bookAdd).subscribe({
-        next: () => this.router.navigate(['/libraire']),
         error: error => bookControl.setErrors(this.gestionErreurAddBook(error.status))
       });
+
+      if(bookControl?.errors === null){
+        this.router.navigate(['/libraire']);
+      }
     });
   }
 

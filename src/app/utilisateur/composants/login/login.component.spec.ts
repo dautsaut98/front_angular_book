@@ -7,6 +7,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Utilisateur } from "src/app/models/utilisateur";
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from "@angular/router";
+import { By } from "@angular/platform-browser";
 
 describe("LoginComposant", () =>{
     let fixture: ComponentFixture<LoginComponent>;
@@ -40,6 +41,16 @@ describe("LoginComposant", () =>{
             expect(loginForm?.get('password')?.value).toEqual('');
             expect(loginForm?.errors).toBeNull();
             expect(loginForm?.valid).toBeFalse();
+        });
+
+        it('test affichage form apres ngOnInit', () => {
+            // WHEN
+            fixture.detectChanges();
+
+            // THEN
+            const debug = fixture.debugElement;
+            expect(debug.query(By.css('#login')).nativeElement.value).toEqual('');
+            expect(debug.query(By.css('#password')).nativeElement.value).toEqual('');
         });
     });
 

@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, isEmpty, map } from 'rxjs';
-import { Utilisateur } from 'src/app/models/utilisateur';
 import { GestionUtilisateurService } from 'src/app/utilisateur/services/gestion-utilisateur.service';
 
 @Component({

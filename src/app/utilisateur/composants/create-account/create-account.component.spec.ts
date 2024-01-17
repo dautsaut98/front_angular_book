@@ -8,6 +8,7 @@ import { of, throwError } from "rxjs";
 import { Utilisateur } from "src/app/models/utilisateur";
 import { HttpErrorResponse } from "@angular/common/http";
 import { FormGroup } from "@angular/forms";
+import { By } from "@angular/platform-browser";
 
 describe('CreateAccountComponent', () => {
     let fixture: ComponentFixture<CreateAccountComponent>;
@@ -49,6 +50,20 @@ describe('CreateAccountComponent', () => {
             expect(createAccountForm.get('emailGroup').valid).toBeFalse();
             expect(createAccountForm.valid).toBeFalse();
         });
+
+        it('test affichage form apres ngOnInit', () => {
+            // WHEN
+            fixture.detectChanges();
+
+            // THEN
+            const debug = fixture.debugElement;
+            expect(debug.query(By.css('#login')).nativeElement.value).toEqual('');
+            expect(debug.query(By.css('#prenom')).nativeElement.value).toEqual('');
+            expect(debug.query(By.css('#nom')).nativeElement.value).toEqual('');
+            expect(debug.query(By.css('#password')).nativeElement.value).toEqual('');
+            expect(debug.query(By.css('#email')).nativeElement.value).toEqual('');
+            expect(debug.query(By.css('#emailConfirm')).nativeElement.value).toEqual('');
+        });
     });
 
     describe('register', () => {
@@ -75,7 +90,7 @@ describe('CreateAccountComponent', () => {
                 error: new ErrorEvent('error', { message: 'Erreur interne du serveur' }),
                 status: 500, // Le statut HTTP de l'erreur (500 pour une erreur serveur, par exemple)
                 statusText: 'Erreur interne du serveur', // Le texte du statut HTTP
-              });
+            });
             mockGestionUtilisateurService.addUtilisateur.and.returnValue(throwError(() => error));
 
             // WHEN
