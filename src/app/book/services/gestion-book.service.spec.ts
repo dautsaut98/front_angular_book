@@ -99,7 +99,7 @@ describe('GestionBookService', () => {
       // THEN
       expect(listeBook.length).toBe(0);
       // Vérifie si une requête correspondante a été effectuée avec l'URL attendue
-      const req = httpTestingController.expectOne(`${urlBook}?idUser=${idUser}`);
+      const req = httpTestingController.expectOne(`/all/${urlBook}?idUser=${idUser}`);
       // On vérifie que l'on est dans une méthode GET.
       expect(req.request.method).toBe('GET');
       // Simule la réponse à la requête HTTP attendue
@@ -120,7 +120,7 @@ describe('GestionBookService', () => {
       });
 
       // THEN
-      const req = httpTestingController.expectOne(`${urlBook}?idUser=${idUser}`);
+      const req = httpTestingController.expectOne(`/all/${urlBook}?idUser=${idUser}`);
       expect(req.request.method).toBe('GET');
       req.flush(null, expectedError);
       httpTestingController.verify();

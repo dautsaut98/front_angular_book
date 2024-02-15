@@ -7,7 +7,7 @@ import { Book } from 'src/app/models/book';
   providedIn: 'root'
 })
 export class GestionBookService implements OnInit, OnDestroy {
-  books!: Book[];
+  books!: Book[]; 
   book?: Book;
   idUser: number = null;
 
@@ -47,7 +47,7 @@ export class GestionBookService implements OnInit, OnDestroy {
     this.idUser = idUser ?? null;
 
     const queryParams = new HttpParams().append("idUser", this.idUser);
-    return this.http.get<Book[]>(this.urlBack, { params: queryParams })
+    return this.http.get<Book[]>(this.urlBack+"/all", { params: queryParams })
       .pipe(
         first(),
         tap({

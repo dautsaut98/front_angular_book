@@ -44,7 +44,7 @@ describe('GestionUtilisateurService', () => {
 
             // THEN
             resultat.subscribe((user) => expect(user).toEqual(utilisateur));
-            const req = httpTestingController.expectOne(`${urlUtilisateur}?login=${utilisateur.login}&password=${utilisateur.password}`);
+            const req = httpTestingController.expectOne(`${urlUtilisateur}/connexion?login=${utilisateur.login}&password=${utilisateur.password}`);
             expect(req.request.method).toBe('GET');
             req.flush(utilisateur);
             httpTestingController.verify();
@@ -59,7 +59,7 @@ describe('GestionUtilisateurService', () => {
 
             // THEN
             resultat.subscribe({ error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse)) });
-            const req = httpTestingController.expectOne(`${urlUtilisateur}?login=${utilisateur.login}&password=${utilisateur.password}`);
+            const req = httpTestingController.expectOne(`${urlUtilisateur}/connexion?login=${utilisateur.login}&password=${utilisateur.password}`);
             expect(req.request.method).toBe('GET');
             req.error(errorInterne);
             httpTestingController.verify();
@@ -103,7 +103,7 @@ describe('GestionUtilisateurService', () => {
             spyOn(console, 'error');
 
             // WHEN
-            const resultat = service.addUtilisateur(utilisateur);
+            const resultat = service.inscription(utilisateur);
 
             // THEN
             resultat.subscribe({ error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse)) });
@@ -118,7 +118,7 @@ describe('GestionUtilisateurService', () => {
 
         it('addUtilisateur without error', () => {
             // WHEN
-            const resultat = service.addUtilisateur(utilisateur).subscribe();
+            const resultat = service.inscription(utilisateur).subscribe();
 
             // THEN
             const req = httpTestingController.expectOne(`${urlUtilisateur}`);
@@ -136,7 +136,7 @@ describe('GestionUtilisateurService', () => {
 
         it('register without error', () => {
             // WHEN
-            const resultat = service.addUtilisateur(utilisateur);
+            const resultat = service.inscription(utilisateur);
 
             // THEN
             resultat.subscribe((user) => expect(user).toEqual(utilisateur));
@@ -152,7 +152,7 @@ describe('GestionUtilisateurService', () => {
             spyOn(console, 'error');
 
             // WHEN
-            const resultat = service.addUtilisateur(utilisateur);
+            const resultat = service.inscription(utilisateur);
 
             // THEN
             resultat.subscribe({ error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse)) });
@@ -167,7 +167,7 @@ describe('GestionUtilisateurService', () => {
             spyOn(console, 'error');
 
             // WHEN
-            const resultat = service.addUtilisateur(utilisateur);
+            const resultat = service.inscription(utilisateur);
 
             // THEN
             resultat.subscribe({ error: err => expect(console.error).toHaveBeenCalledWith(jasmine.any(HttpErrorResponse)) });

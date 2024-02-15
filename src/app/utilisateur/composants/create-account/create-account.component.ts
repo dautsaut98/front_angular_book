@@ -40,7 +40,7 @@ export class CreateAccountComponent implements OnInit {
     const email: string = this.createAccountForm.get('emailGroup').get('email')?.value;
     const password: string = this.createAccountForm.get('password')?.value;
 
-    this.gestionUtilisateurService.addUtilisateur({ id: -1, login: login, prenom: prenom, nom: nom, password: password, email: email }).subscribe({
+    this.gestionUtilisateurService.inscription({ id: -1, login: login, prenom: prenom, nom: nom, password: password, email: email }).subscribe({
       next: () => this.router.navigate(["/libraire"]),
       error: () => this.createAccountForm.setErrors({ connectionServeur: true }),
     });

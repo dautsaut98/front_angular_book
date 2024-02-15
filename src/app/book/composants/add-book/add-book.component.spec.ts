@@ -32,7 +32,7 @@ describe('AddBookComponent', () => {
         let listeForm = (<FormArray>fixture.componentInstance.bookForm.get('books'));
         listeForm.clear();
         booksAdd.forEach(book => {
-            // Permet de ne pas ajouter un control si le premier formulaire n'est pas instancier.
+            // Permet de ne pas ajouter un formulaire de livre.
             fixture.componentInstance.addFormBook();
 
             // Rempli le dernier control non modifier avec le livre.

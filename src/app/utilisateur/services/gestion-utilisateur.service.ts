@@ -12,7 +12,11 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
   private utilisateurSubject: BehaviorSubject<Utilisateur | null> = new BehaviorSubject<Utilisateur | null>(null);
   utilisateur$: Observable<Utilisateur | null> = this.utilisateurSubject.asObservable();
 
-  private urlBack = "http://localhost:8080/utilisateur";
+  private static urlInscription = "http://localhost:8080/inscription";
+
+  private static urlConnexion = "http://localhost:8080/connexion";
+
+  private static urlUtilisateur = "http://localhost:8080/utilisateur";
 
   private subscriptions: Subscription[] = [];
 
@@ -32,15 +36,18 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
     // On reset.
     this.utilisateurSubject.next(null);
 
-    return this.getUtilisateur(login, password).pipe(
-      switchMap((utilisateur: Utilisateur) => {
-        this.utilisateurSubject.next(utilisateur ?? null)
-        return this.utilisateurSubject.asObservable();
-      }),
-      catchError((error: any) => {
-        this.gestionErreurUtilisateur(error);
-        return this.utilisateurSubject.asObservable();
-      })
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<string>(GestionUtilisateurService.urlConnexion, {login: login, password: password}, { headers })
+      .pipe(
+        // On récupère le token si la connexion est correct.
+        switchMap((newToken: any) => {
+          // On met le token en session.
+          localStorage.setItem('token', newToken.accessToken);
+          // On récupère l'utilisateur.
+          return this.getUtilisateur(login);
+        }),
+        // sinon on remonte une erreur
+        catchError(error => {return throwError(() => error);})
     );
   }
 
@@ -48,20 +55,22 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
    * On ajoute un utilisateur et retourne l'utilisateur courant.
    * @param utilisateur
    */
-  addUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur> {
+  inscription(utilisateur: Utilisateur): Observable<Utilisateur> {
     this.utilisateurSubject.next(null);
     // On ajoute le nouvel utilisateur.
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<Utilisateur>(this.urlBack, utilisateur, { headers })
+    return this.http.post<string>(GestionUtilisateurService.urlInscription, utilisateur, { headers })
       .pipe(
-        first(),
-        tap({
-          next: utilisateurRetour => {
-            console.info(JSON.stringify(utilisateurRetour));
-            this.utilisateurSubject.next(utilisateurRetour);
-          },
-          error: error => console.error(error)
-        }));
+        // On récupère le token si l'inscription est correct.
+        switchMap((newToken: any) => {
+          // On met le token en session.
+          localStorage.setItem('token', newToken.accessToken);
+          // On récupère l'utilisateur.
+          return this.getUtilisateur(utilisateur.login);
+        }),
+        // sinon on remonte une erreur
+        catchError(error => {return throwError(() => error);})
+      );
   }
 
   /**
@@ -91,17 +100,22 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
   /**
    * retourne l'utilisateur
    */
-  getUtilisateur(login: string, password: string): Observable<Utilisateur> {
-    const queryParams = new HttpParams().append("login", login).append("password", password);
-
-    return this.http.get<Utilisateur>(this.urlBack, { params: queryParams })
+  getUtilisateur(login: string): Observable<Utilisateur> {
+    return this.http.get<Utilisateur>(GestionUtilisateurService.urlUtilisateur+"/"+login)
       .pipe(
         first(),
         tap({
-          next: utilisateur => console.info(JSON.stringify(utilisateur)),
-          error: error => console.error(error)
-        }
-        ));
+          next: utilisateur => {
+            this.utilisateurSubject.next(utilisateur ?? null);
+            console.info(JSON.stringify(utilisateur));
+          },
+          error: error => {
+            console.error(error);
+            this.gestionErreurUtilisateur(error);
+          },
+          finalize: () => { return this.utilisateurSubject.asObservable(); }
+        })
+      );
   }
 
   ngOnDestroy(): void {
