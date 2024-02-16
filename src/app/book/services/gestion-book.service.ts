@@ -26,11 +26,10 @@ export class GestionBookService implements OnInit, OnDestroy {
    * @param bookAdd 
    */
   addBook(bookAdd: Book): Observable<Book> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    bookAdd.id = null;
     bookAdd.idUser = this.idUser;
 
-    return this.http.post<Book>(this.urlBack, bookAdd, { headers })
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<Book>(`${this.urlBack}/addBook`, bookAdd, { headers })
       .pipe(
         first(),
         tap({
@@ -46,12 +45,12 @@ export class GestionBookService implements OnInit, OnDestroy {
   getBooks(idUser: number): Observable<Book[]> {
     this.idUser = idUser ?? null;
 
-    const queryParams = new HttpParams().append("idUser", this.idUser);
-    return this.http.get<Book[]>(this.urlBack+"/all", { params: queryParams })
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<Book[]>(`${this.urlBack}/all?idUser=${idUser}`, { headers })
       .pipe(
         first(),
         tap({
-          next: books => {
+          next: (books: Book[]) => {
             console.info(JSON.stringify(books));
             this.books = books;
           },

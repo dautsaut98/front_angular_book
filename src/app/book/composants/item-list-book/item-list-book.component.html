@@ -1,0 +1,10 @@
+<div id='detailBook' *ngIf = 'determineIsAffichable()'>
+  <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+    <img [src]="book.srcImage" class="card-img-top rounded" alt="Image du livre" (error)="handleImageError($event, book)">
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{ book.nom }}</h5>
+    <p class="card-text">{{ book.description }}</p>
+    <p class="card-text"><small class="text-muted">{{ book.dateParution }}</small></p>
+  </div>
+</div>

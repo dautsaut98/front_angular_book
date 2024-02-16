@@ -43,7 +43,7 @@ describe('LibrairieUtilisateurComponent', () => {
 
     describe('test ngOnInit', () => {
 
-        const book = { id: 0, nom: 'nomBook', dateParution: '05/07/1998', description: 'description du livre', idUser: 1, lu: false, nomAuteur: 'nomAuteur', prenomAuteur: 'prenomAuteur' };
+        const book = { id: 0, nom: 'nomBook', dateParution: '05/07/1998', description: 'description du livre', idUser: 1, lu: false, nomAuteur: 'nomAuteur', prenomAuteur: 'prenomAuteur', srcImage: '' };
 
         beforeEach(() => {
             // Car j'ai besoin dans des test du filtre d'overwrite avant la creation.
@@ -89,8 +89,8 @@ describe('LibrairieUtilisateurComponent', () => {
     describe('test getBooks interne plus affichage de la liste', () => {
 
         const books: Book[] = [
-            { id: 0, nom: 'nomBook', dateParution: '05/07/1998', description: 'description du livre', idUser: 1, lu: false, nomAuteur: 'nomAuteur', prenomAuteur: 'prenomAuteur' },
-            { id: 1, nom: 'nomBook2', dateParution: '05/07/1998', description: 'description du livre', idUser: 1, lu: true, nomAuteur: 'nomAuteur', prenomAuteur: 'prenomAuteur' },
+            { id: 0, nom: 'nomBook', dateParution: '05/07/1998', description: 'description du livre', idUser: 1, lu: false, nomAuteur: 'nomAuteur', prenomAuteur: 'prenomAuteur', srcImage: '' },
+            { id: 1, nom: 'nomBook2', dateParution: '05/07/1998', description: 'description du livre', idUser: 1, lu: true, nomAuteur: 'nomAuteur', prenomAuteur: 'prenomAuteur', srcImage: '' },
         ];
 
         beforeEach(() => {

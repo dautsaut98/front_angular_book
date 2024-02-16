@@ -3,6 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { GestionBookService } from '../../services/gestion-book.service';
 import { Book } from 'src/app/models/book';
 import { Router } from '@angular/router';
+import { forkJoin, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-add-book',
@@ -25,6 +26,7 @@ export class AddBookComponent implements OnInit {
     return this.formBuilder.group({
       nom: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required, Validators.minLength(3)]],
+      srcImage: [''],
       dateParution: ['', [Validators.required, Validators.minLength(3)]],
       lu: [false],
       prenomAuteur: ['', [Validators.required, Validators.minLength(3)]],
@@ -57,22 +59,18 @@ export class AddBookComponent implements OnInit {
    * Ajoute un/des livre(s).
    */
   addBook() {
-    // Si isBookFind est true alors on ajoute aucun livre.
+    // Si isBookFind est true alors on n'ajoute aucun livre.
     if(this.isDoublonsInListeAddBook()){
       return;
     }
 
-    // On enregistre les livres 1 par un.
-    this.books.controls.forEach(bookControl => {
-      const bookAdd = this.transformFormInBook(bookControl);
+    // On transforme la liste de livre control en liste de scubscribe.
+    const addBookObservables = this.books.controls.map(bookControl => this.gestionBookService.addBook(this.transformFormInBook(bookControl)));
 
-      this.gestionBookService.addBook(bookAdd).subscribe({
-        error: error => bookControl.setErrors(this.gestionErreurAddBook(error.status))
-      });
-
-      if(bookControl?.errors === null){
-        this.router.navigate(['/libraire']);
-      }
+    forkJoin(addBookObservables).subscribe({
+      // Tous les appels ont été réussis
+      next: () => this.router.navigate(['/libraire']),
+      error: error => console.error('Une erreur est survenue lors de l\'ajout des livres:', error)
     });
   }
 
@@ -81,6 +79,10 @@ export class AddBookComponent implements OnInit {
    * @returns true si il y a un doublons dans la liste des livres à ajouter
    */
   isDoublonsInListeAddBook(): boolean{
+    // Si la liste des livres est null on retourne false
+    if(!this.gestionBookService.books) {
+      return false;
+    }
     // Liste des noms des livres Ajoutés.
     const listeLivreAddName: string[] = this.books.controls.map(formControl => formControl.get('nom')?.value);
 
@@ -130,6 +132,7 @@ export class AddBookComponent implements OnInit {
     const lu: boolean = !!(form.get('lu')?.value ?? false);
     const prenomAuteur: string = form.get('prenomAuteur')?.value;
     const nomAuteur: string = form.get('nomAuteur')?.value;
-    return {id: -1, idUser: -1, nom: nom, prenomAuteur: prenomAuteur, nomAuteur: nomAuteur, description: description, dateParution: dateParution, lu: lu};
+    const srcImage: string = form.get('srcImage')?.value ?? '';
+    return {id: -1, idUser: -1, nom: nom, prenomAuteur: prenomAuteur, nomAuteur: nomAuteur, description: description, dateParution: dateParution, lu: lu, srcImage: srcImage}
   }
-}
+};

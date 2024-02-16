@@ -8,4 +8,5 @@ export interface Book {
     description: string;
     dateParution: string;
     lu: boolean;
+    srcImage: string;
 }

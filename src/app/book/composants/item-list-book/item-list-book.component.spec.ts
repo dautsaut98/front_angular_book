@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { DetailBookComponent } from "./detail-book.component";
+import { ItemListBookComponent } from "./item-list-book.component";
 import { Book } from "src/app/models/book";
 import { By } from "@angular/platform-browser";
 
 describe('DetailBookComponent', () => {
-    let fixture: ComponentFixture<DetailBookComponent>;
+    let fixture: ComponentFixture<ItemListBookComponent>;
     let book: Book;
 
     beforeEach(() => {
-        book = { id: 0, nom: 'nomBook', dateParution: '05/07/1998', description: 'description du livre', idUser: 1, lu: false, nomAuteur: 'nomAuteur', prenomAuteur: 'prenomAuteur' };
+        book = { id: 0, nom: 'nomBook', dateParution: '05/07/1998', description: 'description du livre', idUser: 1, lu: false, nomAuteur: 'nomAuteur', prenomAuteur: 'prenomAuteur', srcImage: '' };
         TestBed.configureTestingModule({
-            declarations:[DetailBookComponent]
+            declarations:[ItemListBookComponent]
         });
-        fixture = TestBed.createComponent(DetailBookComponent);
+        fixture = TestBed.createComponent(ItemListBookComponent);
     });
 
     describe('test d affichage du composant et de ses elements', () => {

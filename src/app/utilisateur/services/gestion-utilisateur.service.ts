@@ -87,6 +87,9 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
    */
   disconnect(): void {
     this.utilisateurSubject.next(null);
+
+    // On enleve le token.
+    localStorage.removeItem('token');
   }
 
   /**

@@ -1,3 +1,11 @@
-<div class="list-group" *ngFor="let book of getBooks()">
-    <app-detail-book [book]="book"/>
+<div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+      <ng-container *ngFor="let book of getBooks()">
+            <div class="col">
+                <div class="card h-100 border shadow">
+                    <item-list-book [book]="book"/>
+                </div>
+            </div>
+        </ng-container>
+    </div>
 </div>
