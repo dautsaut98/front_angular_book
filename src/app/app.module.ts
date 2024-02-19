@@ -13,7 +13,7 @@ import { TokenInterceptor } from './utils/token-interceptor';
 @NgModule({
   declarations: [
     AppComponent,
-    NavBarComponent
+    NavBarComponent,
   ],
   imports: [
     BrowserModule,

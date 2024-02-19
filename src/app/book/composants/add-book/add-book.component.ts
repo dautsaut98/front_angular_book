@@ -3,7 +3,8 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { GestionBookService } from '../../services/gestion-book.service';
 import { Book } from 'src/app/models/book';
 import { Router } from '@angular/router';
-import { forkJoin, throwError } from 'rxjs';
+import { forkJoin } from 'rxjs';
+import { IMAGE_DEFAULT_PATH } from './../../../utils/app.config';
 
 @Component({
   selector: 'app-add-book',
@@ -31,6 +32,8 @@ export class AddBookComponent implements OnInit {
       lu: [false],
       prenomAuteur: ['', [Validators.required, Validators.minLength(3)]],
       nomAuteur: ['', [Validators.required, Validators.minLength(3)]],
+      // Pour l'affichage de l'image de prévisualisation.
+      urlImagePrevisualisation: [IMAGE_DEFAULT_PATH],
     });
   }
 
@@ -135,4 +138,28 @@ export class AddBookComponent implements OnInit {
     const srcImage: string = form.get('srcImage')?.value ?? '';
     return {id: -1, idUser: -1, nom: nom, prenomAuteur: prenomAuteur, nomAuteur: nomAuteur, description: description, dateParution: dateParution, lu: lu, srcImage: srcImage}
   }
-};
+
+  /**
+   * Permet si l'image de prévisualisation ne s'affiche pas de la changer par une image par defaut.
+   * @param index du livre où est l'erreur
+   */
+  handleImageError(index: number) {
+    this.books.at(index)?.get('urlImagePrevisualisation')?.setValue(IMAGE_DEFAULT_PATH);
+  }
+
+  /**
+   * Quand l'input de l'url est change on change celui de urlImagePrevisualisation
+   * @param index du livre où l'url a changé
+   */
+  urlImageChange(index: number) {
+    this.books.at(index)?.get('urlImagePrevisualisation')?.setValue(this.books.at(index)?.get('srcImage')?.value);
+  }
+
+  /**
+   * Permet de récupérer urlImagePrevisualisation
+   * @param index du livre où on veut récupérer urlImagePrevisualisation
+   */
+  getUrlImagePrevisualisation(index: number): string {
+    return this.books.at(index)?.get('urlImagePrevisualisation')?.value;
+  }
+}

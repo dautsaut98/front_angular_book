@@ -1,24 +1,25 @@
-.card-img-top {
+img {
     object-fit: cover;
     width: 200px;
     height: 300px;
 }
-  
-.card-body {
-    padding: 1rem;
+
+.image-container {
+    position: relative;
 }
   
-.card-title {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+.lu-badge {
+    position: absolute;
+    bottom: 8%;
+    left: 185px;
+    padding: 1px 3px;
+    background-color: white;
+    color: green;
+    font-size: 10px;
+    border-radius: 3px;
+    border: 1px solid green;
 }
   
-.card-text {
-    font-size: 0.875rem;
+.lu-border {
+    border: 2px solid green;
 }
-  
-.text-muted {
-    font-size: 0.75rem;
-}
-  

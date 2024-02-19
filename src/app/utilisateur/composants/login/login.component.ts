@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GestionUtilisateurService } from '../../services/gestion-utilisateur.service';
 import { Router } from '@angular/router';
+import { BACKGROUND_SIGNUP_CONNEXION_PATH } from './../../../utils/app.config';
 
 @Component({
   selector: 'app-login',
@@ -10,6 +11,8 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
+
+  public backgroundPath = BACKGROUND_SIGNUP_CONNEXION_PATH;
 
   constructor(private formBuilder: FormBuilder,
     private gestionUtilisateurService: GestionUtilisateurService,
