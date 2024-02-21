@@ -1,24 +1,20 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, first, tap } from 'rxjs';
 import { Book } from 'src/app/models/book';
+import { GestionUtilisateurService } from 'src/app/utilisateur/services/gestion-utilisateur.service';
+import { globalVariables } from 'src/app/utils/app.config';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GestionBookService implements OnInit, OnDestroy {
+export class GestionBookService {
   books!: Book[]; 
   book?: Book;
   idUser: number = null;
 
-  private urlBack = "http://localhost:8080/book";
-
-  private subscriptions: Subscription[] = [];
-
-  constructor(private http: HttpClient) { }
-
-  ngOnInit(): void {
-    this.subscriptions = [];
+  constructor(private http: HttpClient, private gestionUtilisateurService: GestionUtilisateurService) {
+    this.gestionUtilisateurService.utilisateur$.subscribe(utilisateur => this.idUser = utilisateur?.id);
   }
 
   /**
@@ -29,7 +25,7 @@ export class GestionBookService implements OnInit, OnDestroy {
     bookAdd.idUser = this.idUser;
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<Book>(`${this.urlBack}/addBook`, bookAdd, { headers })
+    return this.http.post<Book>(`${globalVariables.URL_BOOK}/addBook`, bookAdd, { headers })
       .pipe(
         first(),
         tap({
@@ -42,11 +38,9 @@ export class GestionBookService implements OnInit, OnDestroy {
    * @param idUtilisateur 
    * @returns 
    */
-  getBooks(idUser: number): Observable<Book[]> {
-    this.idUser = idUser ?? null;
-
+  getBooks(): Observable<Book[]> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<Book[]>(`${this.urlBack}/all?idUser=${idUser}`, { headers })
+    return this.http.get<Book[]>(`${globalVariables.URL_BOOK}/all?idUser=${this.idUser}`, { headers })
       .pipe(
         first(),
         tap({
@@ -56,9 +50,5 @@ export class GestionBookService implements OnInit, OnDestroy {
           },
           error: error => console.error(error)
         }));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscribe => subscribe.unsubscribe());
   }
 }

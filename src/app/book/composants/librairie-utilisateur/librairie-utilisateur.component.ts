@@ -12,7 +12,6 @@ import { Subscription } from 'rxjs';
 })
 export class LibrairieUtilisateurComponent implements OnInit, OnDestroy {
   filter: string = "";
-  idUser: number = null;
 
   listeLivre: Book[] = [];
 
@@ -36,20 +35,16 @@ export class LibrairieUtilisateurComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(private gestionBookService: GestionBookService,
-    private gestionUtilisateurService: GestionUtilisateurService,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.subscriptions = [];
-    const subscribeGetUtilisateur = this.gestionUtilisateurService.utilisateur$.subscribe(user => this.idUser = user?.id ?? null);
-    this.gestionBookService.getBooks(this.idUser).subscribe({
+    this.gestionBookService.getBooks().subscribe({
       next: books => this.listeLivre = books,
       error: () => this.listeLivre = []
     });
 
     this.route.queryParams.subscribe((params) => this.filter = params['filter'] ?? '');
-
-    this.subscriptions.push(subscribeGetUtilisateur);
   }
 
   getBooks(): Book[] {

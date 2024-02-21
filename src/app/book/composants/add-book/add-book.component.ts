@@ -4,7 +4,7 @@ import { GestionBookService } from '../../services/gestion-book.service';
 import { Book } from 'src/app/models/book';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { IMAGE_DEFAULT_PATH } from './../../../utils/app.config';
+import { globalVariables } from 'src/app/utils/app.config';
 
 @Component({
   selector: 'app-add-book',
@@ -29,11 +29,11 @@ export class AddBookComponent implements OnInit {
       description: ['', [Validators.required, Validators.minLength(3)]],
       srcImage: [''],
       dateParution: ['', [Validators.required, Validators.minLength(3)]],
-      lu: [false],
+      lu: [false, [Validators.required]],
       prenomAuteur: ['', [Validators.required, Validators.minLength(3)]],
       nomAuteur: ['', [Validators.required, Validators.minLength(3)]],
       // Pour l'affichage de l'image de prévisualisation.
-      urlImagePrevisualisation: [IMAGE_DEFAULT_PATH],
+      urlImagePrevisualisation: [globalVariables.IMAGE_DEFAULT_PATH],
     });
   }
 
@@ -59,6 +59,15 @@ export class AddBookComponent implements OnInit {
   }
 
   /**
+   * Recupere l'index du formulaire en fonction du nom du livre.
+   * @param nomLivre Le nom du livre d'où on veut récupérer le formulaire.
+   * @returns l'index du formulaire
+   */
+  searchIndexFormBook(nomLivre: string): number {
+    return this.books.controls.findIndex(form => form.get('nom')?.value === nomLivre)
+  }
+
+  /**
    * Ajoute un/des livre(s).
    */
   addBook() {
@@ -71,9 +80,13 @@ export class AddBookComponent implements OnInit {
     const addBookObservables = this.books.controls.map(bookControl => this.gestionBookService.addBook(this.transformFormInBook(bookControl)));
 
     forkJoin(addBookObservables).subscribe({
-      // Tous les appels ont été réussis
+      // Tous les appels ont été réussis.
       next: () => this.router.navigate(['/libraire']),
-      error: error => console.error('Une erreur est survenue lors de l\'ajout des livres:', error)
+       // On supprime tous les livres qui ont été ajoutés. Puis on rajoute à celui en erreur un message.
+      error: errorResponse => {
+        this.books.controls.splice(0, this.searchIndexFormBook(errorResponse.error));
+        this.books.controls.at(0)?.setErrors(this.gestionErreurAddBook(errorResponse.status));
+      }
     });
   }
 
@@ -144,7 +157,7 @@ export class AddBookComponent implements OnInit {
    * @param index du livre où est l'erreur
    */
   handleImageError(index: number) {
-    this.books.at(index)?.get('urlImagePrevisualisation')?.setValue(IMAGE_DEFAULT_PATH);
+    this.books.at(index)?.get('urlImagePrevisualisation')?.setValue(globalVariables.IMAGE_DEFAULT_PATH);
   }
 
   /**

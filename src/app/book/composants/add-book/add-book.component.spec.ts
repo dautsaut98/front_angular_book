@@ -715,7 +715,6 @@ describe('AddBookComponent', () => {
             const booksTest: Book[] = books.slice(0, 2).map(book => copyOfOneBook(book));
             // Déclenchement du cycle de détection des modifications Angular
             fixture.detectChanges();
-            debugger;
 
             // WHEN
             // Pré-remplissage de la liste des formulaires de livres dans le composant

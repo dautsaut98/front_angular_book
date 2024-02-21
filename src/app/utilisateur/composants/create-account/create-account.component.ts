@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GestionUtilisateurService } from '../../services/gestion-utilisateur.service';
 import { Router } from '@angular/router';
+import { globalVariables } from 'src/app/utils/app.config';
 
 
 function validatorEmailGroup(abstractControl: AbstractControl): { [key: string]: boolean } | null {
@@ -15,6 +16,8 @@ function validatorEmailGroup(abstractControl: AbstractControl): { [key: string]:
 })
 export class CreateAccountComponent implements OnInit {
   createAccountForm!: FormGroup;
+
+  public backgroundPath = globalVariables.BACKGROUND_SIGNUP_CONNEXION_PATH;
 
   constructor(private formBuilder: FormBuilder,
     private gestionUtilisateurService: GestionUtilisateurService,
@@ -42,7 +45,7 @@ export class CreateAccountComponent implements OnInit {
 
     this.gestionUtilisateurService.inscription({ id: -1, login: login, prenom: prenom, nom: nom, password: password, email: email }).subscribe({
       next: () => this.router.navigate(["/libraire"]),
-      error: () => this.createAccountForm.setErrors({ connectionServeur: true }),
+      error: (error) => this.createAccountForm.setErrors(error.status === 409 ? { loginEmailUse: true } : { connectionServeur: true }),
     });
   }
 }

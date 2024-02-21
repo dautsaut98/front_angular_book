@@ -8,6 +8,7 @@ import { BookModule } from './book/book.module';
 import { NavBarComponent } from './composants/nav-bar/nav-bar.component';
 import { UtilisateurModule } from './utilisateur/utilisateur.module';
 import { TokenInterceptor } from './utils/token-interceptor';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { TokenInterceptor } from './utils/token-interceptor';
 
     // Composants interne
     UtilisateurModule,
+    RouterModule,
     BookModule
   ],
   bootstrap: [AppComponent],

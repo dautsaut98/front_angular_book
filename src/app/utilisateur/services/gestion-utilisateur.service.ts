@@ -2,29 +2,20 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription, catchError, first, of, switchMap, tap, throwError, timeout } from 'rxjs';
 import { Utilisateur } from '../../models/utilisateur';
+import { globalVariables } from 'src/app/utils/app.config';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class GestionUtilisateurService implements OnInit, OnDestroy {
+export class GestionUtilisateurService {
 
   private utilisateurSubject: BehaviorSubject<Utilisateur | null> = new BehaviorSubject<Utilisateur | null>(null);
   utilisateur$: Observable<Utilisateur | null> = this.utilisateurSubject.asObservable();
 
-  private static urlInscription = "http://localhost:8080/inscription";
-
-  private static urlConnexion = "http://localhost:8080/connexion";
-
-  private static urlUtilisateur = "http://localhost:8080/utilisateur";
-
   private subscriptions: Subscription[] = [];
 
-  constructor(private http: HttpClient) { }
-
-  ngOnInit(): void {
-    this.subscriptions = [];
-  }
+  constructor(private http: HttpClient) {}
 
   /**
    * Retourne true si on a trouvé et connecté l'utilisateur.
@@ -35,9 +26,10 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
   connect(login: string, password: string): Observable<Utilisateur> {
     // On reset.
     this.utilisateurSubject.next(null);
+    localStorage.removeItem('token');
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<string>(GestionUtilisateurService.urlConnexion, {login: login, password: password}, { headers })
+    return this.http.post<string>(globalVariables.URL_CONNEXION, {login: login, password: password}, { headers })
       .pipe(
         // On récupère le token si la connexion est correct.
         switchMap((newToken: any) => {
@@ -57,11 +49,12 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
    */
   inscription(utilisateur: Utilisateur): Observable<Utilisateur> {
     this.utilisateurSubject.next(null);
+    localStorage.removeItem('token');
     // On ajoute le nouvel utilisateur.
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<string>(GestionUtilisateurService.urlInscription, utilisateur, { headers })
+    return this.http.post<string>(globalVariables.URL_INSCRIPTION, utilisateur, { headers })
       .pipe(
-        // On récupère le token si l'inscription est correct.
+        // On récupère le token si la connexion est correct.
         switchMap((newToken: any) => {
           // On met le token en session.
           localStorage.setItem('token', newToken.accessToken);
@@ -104,24 +97,17 @@ export class GestionUtilisateurService implements OnInit, OnDestroy {
    * retourne l'utilisateur
    */
   getUtilisateur(login: string): Observable<Utilisateur> {
-    return this.http.get<Utilisateur>(GestionUtilisateurService.urlUtilisateur+"/"+login)
+    return this.http.get<Utilisateur>(`${globalVariables.URL_UTILISATEUR}/${login}`)
       .pipe(
         first(),
         tap({
           next: utilisateur => {
-            this.utilisateurSubject.next(utilisateur ?? null);
+            this.utilisateurSubject.next(utilisateur);
             console.info(JSON.stringify(utilisateur));
           },
-          error: error => {
-            console.error(error);
-            this.gestionErreurUtilisateur(error);
-          },
+          error: error => this.gestionErreurUtilisateur(error),
           finalize: () => { return this.utilisateurSubject.asObservable(); }
         })
       );
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscribe => subscribe.unsubscribe());
   }
 }

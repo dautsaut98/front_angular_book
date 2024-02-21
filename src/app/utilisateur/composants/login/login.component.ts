@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GestionUtilisateurService } from '../../services/gestion-utilisateur.service';
 import { Router } from '@angular/router';
-import { BACKGROUND_SIGNUP_CONNEXION_PATH } from './../../../utils/app.config';
+import { globalVariables } from 'src/app/utils/app.config';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +12,7 @@ import { BACKGROUND_SIGNUP_CONNEXION_PATH } from './../../../utils/app.config';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
 
-  public backgroundPath = BACKGROUND_SIGNUP_CONNEXION_PATH;
+  public backgroundPath = globalVariables.BACKGROUND_SIGNUP_CONNEXION_PATH;
 
   constructor(private formBuilder: FormBuilder,
     private gestionUtilisateurService: GestionUtilisateurService,

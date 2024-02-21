@@ -1,10 +1,11 @@
-<div id='detailBook' *ngIf = 'determineIsAffichable()'>
-  <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
-    <img [src]="book.srcImage" class="card-img-top rounded" alt="Image du livre" (error)="handleImageError($event, book)">
+<div id='detailBook' *ngIf='determineIsAffichable()'>
+  <div class="d-flex justify-content-center align-items-center position-relative">
+    <img [src]="book.srcImage" class="card-img-top rounded" alt="Image du livre" (error)="handleImageError($event, book)" style="max-height: 300px;" [ngClass]="{'lu-border': book.lu}">
+    <div *ngIf="book.lu" class="lu-badge">Lu</div>
   </div>
   <div class="card-body">
-    <h5 class="card-title">{{ book.nom }}</h5>
-    <p class="card-text">{{ book.description }}</p>
-    <p class="card-text"><small class="text-muted">{{ book.dateParution }}</small></p>
+    <p class="card-text mb-1"><span class="label">{{ book.nom }}</span></p>
+    <p class="card-text mb-1"><span class="label">By : </span>{{ book.prenomAuteur }} {{ book.nomAuteur }}</p>
+    <p class="card-text mb-1"><span class="label">publication date : </span>{{ formatDate(book.dateParution) }}</p>
   </div>
 </div>

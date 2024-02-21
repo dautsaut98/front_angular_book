@@ -1,8 +1,15 @@
 .card {
     transition: transform 0.3s ease;
+    width: 220px;
+    height: 430px;
 }
   
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
