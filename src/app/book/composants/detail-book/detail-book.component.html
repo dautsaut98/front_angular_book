@@ -1,0 +1,36 @@
+<div class="card mb-3">
+    <div class="card-header bg-dark text-light fw-bold">{{book.nom}}</div>
+    <div class="card-body">
+      <div class="row">
+        <!-- Prévisualisation de l'image à gauche -->
+        <div class="col-lg-2 position-relative image-container">
+          <img [src]="urlImagePrevisualisation" alt="Prévisualisation de l'image" (error)="handleImageError()" class="img-fluid mb-3 rounded" style="max-height: 300px;" [ngClass]="{'lu-border': book.lu}">
+          <div *ngIf="book.lu" class="lu-badge">Lu</div>
+        </div>
+        <!-- Fin de la prévisualisation de l'image -->
+
+        <!-- Champs du livre à droite -->
+        <div class="col-md-8">
+          <div class="row mb-3 align-items-center">
+            <div class="col-md-6">
+                <div>Date de parution : {{book.dateParution}}</div>
+            </div>
+          </div>
+
+          <div class="row mb-3 align-items-center">
+            <div class="col-md-6">
+                <div>Prenom auteur : {{book.prenomAuteur}}</div>
+            </div>
+            <div class="col-md-6">
+                <div>Nom auteur : {{book.nomAuteur}}</div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div>Description : {{book.description}}</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-return" routerLink="/libraire">Retour</button>
+    </div>
+</div>

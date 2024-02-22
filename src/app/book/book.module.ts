@@ -7,6 +7,7 @@ import { ItemListBookComponent } from './composants/item-list-book/item-list-boo
 import { EditBookComponent } from './composants/edit-book/edit-book.component';
 import { LibrairieUtilisateurComponent } from './composants/librairie-utilisateur/librairie-utilisateur.component';
 import { AppRoutingModule } from '../app-routing.module';
+import { DetailBookComponent } from './composants/detail-book/detail-book.component';
 
 
 @NgModule({
@@ -14,14 +15,17 @@ import { AppRoutingModule } from '../app-routing.module';
     LibrairieUtilisateurComponent,
     ItemListBookComponent,
     EditBookComponent,
-    AddBookComponent
+    AddBookComponent,
+    DetailBookComponent,
+    
   ],
   imports: [
     CommonModule,
     BrowserModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
-  providers: []
+  providers: [],
+  exports: [ItemListBookComponent]
 })
 export class BookModule { }

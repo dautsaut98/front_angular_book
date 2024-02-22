@@ -18,13 +18,15 @@
           <a class="nav-link" routerLink="/addBook">Add Book</a>
         </li>
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <button class="btn btn-outline-light me-2" type="submit">Search</button>
-          <button class="btn btn-danger" type="submit" (click)="disconnect()">Disconnect</button>
-        </ul>
-      </form>
+      <div class="position-relative">
+        <form class="w-100">
+          <input class="form-control" type="search" placeholder="Search" aria-label="Search" [(ngModel)]="searchTerm" name="searchTerm" (input)="search()">
+        </form>
+        <div class="search-results position-absolute w-100 bg-white border rounded shadow mt-2" *ngIf="listeBookFind.length > 0">
+          <item-list-search-book *ngFor="let book of listeBookFind" [book]="book"/>
+        </div>
+      </div>
+      <button class="btn btn-danger ms-2" type="button" (click)="disconnect()">Disconnect</button>
     </div>
   </div>
 </nav>

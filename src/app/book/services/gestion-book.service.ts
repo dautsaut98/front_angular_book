@@ -9,8 +9,7 @@ import { globalVariables } from 'src/app/utils/app.config';
   providedIn: 'root'
 })
 export class GestionBookService {
-  books!: Book[]; 
-  book?: Book;
+  books: Book[] = []; 
   idUser: number = null;
 
   constructor(private http: HttpClient, private gestionUtilisateurService: GestionUtilisateurService) {

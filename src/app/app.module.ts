@@ -9,22 +9,26 @@ import { NavBarComponent } from './composants/nav-bar/nav-bar.component';
 import { UtilisateurModule } from './utilisateur/utilisateur.module';
 import { TokenInterceptor } from './utils/token-interceptor';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { ItemListSearchBookComponent } from './utilisateur/composants/item-list-search-book/item-list-search-book.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent,
+    ItemListSearchBookComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
 
     // Composants interne
     UtilisateurModule,
     RouterModule,
-    BookModule
+    BookModule,
   ],
   bootstrap: [AppComponent],
   providers: [

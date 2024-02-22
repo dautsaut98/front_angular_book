@@ -1,4 +1,4 @@
-<div id='detailBook' *ngIf='determineIsAffichable()'>
+<div id='detailBook' *ngIf='determineIsAffichable()' [routerLink]="['/book', book.id]">
   <div class="d-flex justify-content-center align-items-center position-relative">
     <img [src]="book.srcImage" class="card-img-top rounded" alt="Image du livre" (error)="handleImageError($event, book)" style="max-height: 300px;" [ngClass]="{'lu-border': book.lu}">
     <div *ngIf="book.lu" class="lu-badge">Lu</div>

@@ -1,0 +1,32 @@
+img {
+    object-fit: cover;
+    width: 200px;
+    height: 300px;
+}
+
+.image-container {
+    position: relative;
+}
+
+.lu-badge {
+    position: absolute;
+    bottom: 8%;
+    left: 185px;
+    padding: 1px 3px;
+    background-color: white;
+    color: green;
+    font-size: 10px;
+    border-radius: 3px;
+    border: 1px solid green;
+}
+  
+.lu-border {
+    border: 2px solid green;
+}
+
+.btn-return {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+  

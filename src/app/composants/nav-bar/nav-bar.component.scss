@@ -1,0 +1,9 @@
+.search-results {
+  position: absolute;
+  width: calc(100% - 1rem); /* La largeur est réduite pour compenser les marges de la barre de recherche */
+  background-color: #fff; /* Couleur de fond */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Bordure */
+  overflow-y: auto; /* Ajoute une barre de défilement si nécessaire */
+  max-height: 200px; /* Hauteur maximale pour la liste déroulante */
+  z-index: 1000;
+}

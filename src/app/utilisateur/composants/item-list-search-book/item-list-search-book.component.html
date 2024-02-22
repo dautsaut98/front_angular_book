@@ -1,0 +1,24 @@
+<div class="card" style="height: 90px;" [routerLink]="['/book', book.id]">
+    <div class="row" style="margin-top: 5px; width: 100%;">
+        <!-- Image du livre -->
+        <div class="col-4 col-md-5">
+            <img [src]="pathImageBook" alt="Prévisualisation de l'image" (error)="handleImageError()" class="img-fluid rounded" style="width: 80px; height: 80px; object-fit: cover;">
+        </div>
+        <!-- Détails du livre -->
+        <div class="col-8 col-md-7">
+            <!-- Titre du livre -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h5 class="card-title mb-0" style="font-size: 14px;">{{book.nom}}</h5>
+                </div>
+            </div>
+            <!-- Auteur -->
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="card-text mb-0" style="font-size: 12px;"><small class="text-muted">{{book.prenomAuteur}} {{book.nomAuteur}}</small></p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
