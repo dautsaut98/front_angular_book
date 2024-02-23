@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription, first, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, first, tap } from 'rxjs';
 import { Book } from 'src/app/models/book';
 import { GestionUtilisateurService } from 'src/app/utilisateur/services/gestion-utilisateur.service';
 import { globalVariables } from 'src/app/utils/app.config';
@@ -9,7 +9,7 @@ import { globalVariables } from 'src/app/utils/app.config';
   providedIn: 'root'
 })
 export class GestionBookService {
-  books: Book[] = []; 
+  books: Book[] = [];
   idUser: number = null;
 
   constructor(private http: HttpClient, private gestionUtilisateurService: GestionUtilisateurService) {

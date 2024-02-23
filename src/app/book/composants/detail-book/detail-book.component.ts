@@ -14,29 +14,24 @@ export class DetailBookComponent implements OnInit {
   urlImagePrevisualisation: string = globalVariables.IMAGE_DEFAULT_PATH;
 
   constructor(private route: ActivatedRoute,
-    private router: Router,
-    private gestionBookService: GestionBookService){}
+    private gestionBookService: GestionBookService) { }
 
   ngOnInit(): void {
     // On initialise le livre à null.
     this.book = null;
     // On récupère l'id du livre depuis la route.
-    const bookId = Number.parseInt(this.route.snapshot.paramMap.get('idLivre'));
-    // Si l'id est un integer on cherche le livre sinon on reste sur un livre non définit.
-    if(!isNaN(bookId)){
-      this.book = this.gestionBookService.books.find(book => book.id === bookId);
-    }
-
-    if(!this.determineIsAffichable()) {
-      this.router.navigate(['/libraire'])
-    }
+    this.route.paramMap.subscribe(params => {
+      const bookIdNumber = Number.parseInt(params.get('idLivre'));
+      if(!isNaN(bookIdNumber)) {
+        this.book = this.gestionBookService.books.find(book => book.id === bookIdNumber);
+      }
+    });
   }
 
   /**
    * Permet si l'image de prévisualisation ne s'affiche pas de la changer par une image par defaut.
    */
   handleImageError() {
-    debugger;
     this.urlImagePrevisualisation = globalVariables.IMAGE_DEFAULT_PATH;
   }
 
