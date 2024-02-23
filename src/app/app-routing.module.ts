@@ -6,6 +6,7 @@ import { LibrairieUtilisateurComponent } from './book/composants/librairie-utili
 import { AuthGuard } from './auth.guard';
 import { AddBookComponent } from './book/composants/add-book/add-book.component';
 import { DetailBookComponent } from './book/composants/detail-book/detail-book.component';
+import { UpdateBookComponent } from './book/composants/update-book/update-book.component';
 
 const routes: Routes = [
   {path:'', redirectTo: '/login', pathMatch:'full'},
@@ -13,7 +14,8 @@ const routes: Routes = [
   {path:'createAccount', component: CreateAccountComponent},
   {path:'libraire', component: LibrairieUtilisateurComponent, canActivate: [AuthGuard]},
   {path:'addBook', component: AddBookComponent, canActivate: [AuthGuard]},
-  {path:'book/:idLivre', component: DetailBookComponent, canActivate: [AuthGuard]}
+  {path:'book/:idLivre', component: DetailBookComponent, canActivate: [AuthGuard]},
+  {path:'book/:idLivre/update', component: UpdateBookComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

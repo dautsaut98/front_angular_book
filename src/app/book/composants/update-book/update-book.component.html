@@ -1,0 +1,65 @@
+<form [formGroup]="bookForm">
+    <div class="card mb-3">
+        <div class="card-header bg-dark text-light fw-bold">Update un livre</div>
+        <div class="card-body">
+          <div class="row">
+            <!-- Prévisualisation de l'image à gauche -->
+            <div class="col-lg-2 position-relative image-container">
+              <img [src]="bookForm.get('urlImagePrevisualisation').value" alt="Prévisualisation de l'image" (error)="handleImageError()" class="img-fluid mb-3 rounded" style="max-height: 300px;" [ngClass]="{'lu-border': bookForm.get('lu').value}">
+              <div *ngIf="bookForm.get('lu').value" class="lu-badge">Lu</div>
+            </div>
+            <!-- Fin de la prévisualisation de l'image -->
+    
+            <!-- Champs du livre à droite -->
+            <div class="col-md-8">
+              <div class="row mb-3 align-items-center">
+                <div class="col-md-6">
+                  <label for="nom" class="form-label">Nom</label>
+                  <input type="text" class="form-control" placeholder="Nom" formControlName="nom" id="nom" required>
+                </div>
+                <div class="col-md-3">
+                  <label for="dateParution" class="form-label">Date de parution</label>
+                  <input type="date" class="form-control" formControlName="dateParution" id="dateParution">
+                </div>
+                <div class="col-md-3">
+                  <div class="form-check" style="padding-top: 14px;">
+                    <label class="form-check-label" for="bookIndex">Lu</label>
+                    <input class="form-check-input" type="checkbox" id="lu" formControlName="lu">
+                  </div>
+                </div>
+              </div>
+    
+              <div class="row mb-3 align-items-center">
+                <div class="col-md-6">
+                  <label for="prenomAuteur" class="form-label">Prénom de l'auteur</label>
+                  <input type="text" class="form-control" placeholder="Prénom de l'auteur" formControlName="prenomAuteur" id="prenomAuteur">
+                </div>
+                <div class="col-md-6">
+                  <label for="nomAuteur" class="form-label">Nom de l'auteur</label>
+                  <input type="text" class="form-control" placeholder="Nom de l'auteur" formControlName="nomAuteur" id="nomAuteur">
+                </div>
+              </div>
+    
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="srcImage" class="form-label">URL de l'image</label>
+                  <input type="url" class="form-control" placeholder="URL de l'image" formControlName="srcImage" id="srcImage" (ngModelChange)="urlImageChange()">
+                </div>
+                <div class="col-md-6">
+                  <label for="description" class="form-label">Description</label>
+                  <textarea type="text" class="form-control" placeholder="Description" formControlName="description" id="description"></textarea>
+                </div>
+              </div>
+            </div>
+            <!-- Fin des champs du livre -->
+          </div>
+          <div class="text-danger">
+            <div *ngIf="bookForm.errors?.['bookDejaExistant']">Livre déjà existant</div>
+            <div *ngIf="bookForm.errors?.['UtilisateurNotFound']">Utilisateur ou livre introuvable</div>
+            <div *ngIf="bookForm.errors?.['erreurLorsDeLEnregistrement']">Erreur lors de l'enregistrement</div>
+          </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success" style="margin-left: 10px; margin-right: 10px;" (click)="updateBook()">Update</button>
+    <button type="button" class="btn btn-primary" [routerLink]="'/book/'+book.id">Retour</button>
+</form>

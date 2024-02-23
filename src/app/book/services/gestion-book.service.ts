@@ -33,6 +33,22 @@ export class GestionBookService {
   }
 
   /**
+   * Update un livre.
+   * @param bookAdd 
+   */
+  updateBook(bookAdd: Book): Observable<Book> {
+    bookAdd.idUser = this.idUser;
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<Book>(`${globalVariables.URL_BOOK}/updateBook`, bookAdd, { headers })
+      .pipe(
+        first(),
+        tap({
+          error: err => console.error(err)
+        }));
+  }
+
+  /**
    * On retourne la liste des livres pour un utilisateur.
    * @param idUtilisateur 
    * @returns 

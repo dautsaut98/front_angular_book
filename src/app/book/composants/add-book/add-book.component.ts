@@ -28,7 +28,7 @@ export class AddBookComponent implements OnInit {
       nom: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required, Validators.minLength(3)]],
       srcImage: [''],
-      dateParution: ['', [Validators.required, Validators.minLength(3)]],
+      dateParution: ['', [Validators.required]],
       lu: [false, [Validators.required]],
       prenomAuteur: ['', [Validators.required, Validators.minLength(3)]],
       nomAuteur: ['', [Validators.required, Validators.minLength(3)]],

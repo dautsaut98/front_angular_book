@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { GestionBookService } from '../../services/gestion-book.service';
 import { Book } from 'src/app/models/book';
 import { globalVariables } from 'src/app/utils/app.config';
